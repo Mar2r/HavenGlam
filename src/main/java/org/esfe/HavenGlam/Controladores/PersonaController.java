@@ -1,8 +1,8 @@
 package org.esfe.HavenGlam.Controladores;
 
 import jakarta.validation.Valid;
-import org.esfe.HavenGlam.Modelos.Rol;
-import org.esfe.HavenGlam.Servicios.Interfaces.IRolService;
+import org.esfe.HavenGlam.Modelos.Persona;
+import org.esfe.HavenGlam.Servicios.Interfaces.IPersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,45 +14,46 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.validation.BindingResult;
 
 @Controller
-@RequestMapping("/roles")
-public class RolController {
+@RequestMapping("/personas")
+public class PersonaController {
+
     @Autowired
-    private IRolService rolService;
+    private IPersonaService personaService;
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("roles", rolService.listar());
-        return "roles/list";
+        model.addAttribute("personas", personaService.listar());
+        return "personas/list";
     }
 
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
-        model.addAttribute("rol", new Rol());
-        return "roles/form";
+        model.addAttribute("persona", new Persona());
+        return "personas/form";
     }
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
-        Rol rol = rolService.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado con ID: " + id));
-        model.addAttribute("rol", rol);
-        return "roles/form";
+        Persona persona = personaService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Persona no encontrada con ID: " + id));
+        model.addAttribute("persona", persona);
+        return "personas/form";
     }
 
     @PostMapping("/guardar")
-    public String guardar(@Valid @ModelAttribute("rol") Rol rol,
+    public String guardar(@Valid @ModelAttribute("persona") Persona persona,
                           BindingResult result,
                           Model model) {
         if (result.hasErrors()) {
-            return "roles/form";
+            return "personas/form";
         }
-        rolService.guardar(rol);
-        return "redirect:/roles";
+        personaService.guardar(persona);
+        return "redirect:/personas";
     }
 
     @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
-        rolService.eliminar(id);
-        return "redirect:/roles";
+        personaService.eliminar(id);
+        return "redirect:/personas";
     }
 }

@@ -22,8 +22,8 @@ public class EstadoController
 
     @GetMapping
     public String listar(Model model){
-        model.addAttribute("estado", estadoService.listar());
-        return "estado/list";
+        model.addAttribute("estados", estadoService.listar());
+        return "estados/list";
     }
 
     @GetMapping("/crear")

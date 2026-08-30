@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Roles · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/rol.css}">
+</head>
+<body>
+
+<div class="container rol-page">
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Roles</h2>
+            <a th:href="@{/roles/crear}" class="btn btn-primary">Nuevo rol</a>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre del rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="rol : ${roles}">
+                <td th:text="${rol.idRol}"></td>
+                <td th:text="${rol.nombreRol}"></td>
+                <td th:text="${rol.estado != null ? rol.estado.nombreEstado : ''}"></td>
+                <td class="admin-table-actions">
+                    <a th:href="@{/roles/editar/{id}(id=${rol.idRol})}" class="btn btn-secondary">Editar</a>
+                    <a th:href="@{/roles/eliminar/{id}(id=${rol.idRol})}"
+                       class="btn btn-danger"
+                       onclick="return confirm('¿Seguro que deseas eliminar este rol?');">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(roles)}">
+                <td colspan="4" class="admin-table-empty">No hay roles registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script th:src="@{/js/rol.js}"></script>
+</body>
+</html>

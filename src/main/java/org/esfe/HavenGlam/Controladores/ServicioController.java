@@ -23,20 +23,36 @@ public class ServicioController {
     @Autowired
     private IEstadoService estadoService;
 
+    // ---------- INDEX (listado) ----------
     @GetMapping
-    public String listar(Model model) {
+    public String index(Model model) {
         model.addAttribute("servicios", servicioService.listar());
-        return "servicios/list";
+        return "servicios/index";
     }
 
+    // ---------- CREATE ----------
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("servicio", new Servicio());
         model.addAttribute("categorias", categoriaService.listar());
         model.addAttribute("estados", estadoService.listar());
-        return "servicios/form";
+        return "servicios/create";
     }
 
+    @PostMapping("/crear")
+    public String crear(@Valid @ModelAttribute("servicio") Servicio servicio,
+                        BindingResult result,
+                        Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("categorias", categoriaService.listar());
+            model.addAttribute("estados", estadoService.listar());
+            return "servicios/create";
+        }
+        servicioService.guardar(servicio);
+        return "redirect:/servicios";
+    }
+
+    // ---------- EDIT ----------
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
         Servicio servicio = servicioService.buscarPorId(id)
@@ -44,23 +60,43 @@ public class ServicioController {
         model.addAttribute("servicio", servicio);
         model.addAttribute("categorias", categoriaService.listar());
         model.addAttribute("estados", estadoService.listar());
-        return "servicios/form";
+        return "servicios/edit";
     }
 
-    @PostMapping("/guardar")
-    public String guardar(@Valid @ModelAttribute("servicio") Servicio servicio,
-                          BindingResult result,
-                          Model model) {
+    @PostMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id,
+                         @Valid @ModelAttribute("servicio") Servicio servicio,
+                         BindingResult result,
+                         Model model) {
         if (result.hasErrors()) {
             model.addAttribute("categorias", categoriaService.listar());
             model.addAttribute("estados", estadoService.listar());
-            return "servicios/form";
+            return "servicios/edit";
         }
+        servicio.setIdServicio(id);
         servicioService.guardar(servicio);
         return "redirect:/servicios";
     }
 
+    // ---------- DETAILS ----------
+    @GetMapping("/detalles/{id}")
+    public String detalles(@PathVariable Integer id, Model model) {
+        Servicio servicio = servicioService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con ID: " + id));
+        model.addAttribute("servicio", servicio);
+        return "servicios/details";
+    }
+
+    // ---------- DELETE ----------
     @GetMapping("/eliminar/{id}")
+    public String mostrarConfirmacionEliminar(@PathVariable Integer id, Model model) {
+        Servicio servicio = servicioService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con ID: " + id));
+        model.addAttribute("servicio", servicio);
+        return "servicios/delete";
+    }
+
+    @PostMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         servicioService.eliminar(id);
         return "redirect:/servicios";

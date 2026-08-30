@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Servicios · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/servicio.css}">
+</head>
+<body>
+<div class="container servicio-page">
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Servicios</h2>
+            <a th:href="@{/servicios/crear}" class="btn btn-primary">Nuevo servicio</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+            <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="servicio : ${servicios}">
+                <td th:text="${servicio.idServicio}"></td>
+                <td th:text="${servicio.nombreServicio}"></td>
+                <td th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : ''}"></td>
+                <td th:text="${'$' + servicio.precio}"></td>
+                <td th:text="${servicio.estado != null ? servicio.estado.nombreEstado : ''}"></td>
+                <td class="admin-table-actions">
+                    <a th:href="@{/servicios/detalles/{id}(id=${servicio.idServicio})}" class="btn btn-info">Ver</a>
+                    <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-secondary">Editar</a>
+                    <a th:href="@{/servicios/eliminar/{id}(id=${servicio.idServicio})}" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(servicios)}">
+                <td colspan="6" class="admin-table-empty">No hay servicios registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script th:src="@{/js/servicio.js}"></script>
+</body>
+</html>

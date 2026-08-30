@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalle del servicio · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/servicio.css}">
+</head>
+<body>
+<div class="container servicio-page">
+    <div class="admin-card admin-card--details">
+        <div class="admin-card-header"><h2 th:text="${servicio.nombreServicio}"></h2></div>
+        <dl class="admin-details-list">
+            <dt>ID</dt><dd th:text="${servicio.idServicio}"></dd>
+            <dt>Nombre</dt><dd th:text="${servicio.nombreServicio}"></dd>
+            <dt>Descripción</dt><dd th:text="${servicio.descripcion != null ? servicio.descripcion : 'Sin descripción'}"></dd>
+            <dt>Precio</dt><dd th:text="${'$' + servicio.precio}"></dd>
+            <dt>Duración</dt><dd th:text="${#temporals.format(servicio.duracionMinutos, 'HH:mm')}"></dd>
+            <dt>Categoría</dt><dd th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : ''}"></dd>
+            <dt>Estado</dt><dd th:text="${servicio.estado != null ? servicio.estado.nombreEstado : ''}"></dd>
+        </dl>
+        <div class="admin-form-actions">
+            <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-secondary">Editar</a>
+            <a th:href="@{/servicios}" class="btn btn-primary">Volver al listado</a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/servicio.js}"></script>
+</body>
+</html>

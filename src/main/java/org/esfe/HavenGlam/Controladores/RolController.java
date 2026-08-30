@@ -2,6 +2,7 @@ package org.esfe.HavenGlam.Controladores;
 
 import jakarta.validation.Valid;
 import org.esfe.HavenGlam.Modelos.Rol;
+import org.esfe.HavenGlam.Servicios.Interfaces.IEstadoService;
 import org.esfe.HavenGlam.Servicios.Interfaces.IRolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,9 @@ public class RolController {
     @Autowired
     private IRolService rolService;
 
+    @Autowired
+    private IEstadoService estadoService;
+
     @GetMapping
     public String listar(Model model) {
         model.addAttribute("roles", rolService.listar());
@@ -28,6 +32,7 @@ public class RolController {
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("rol", new Rol());
+        model.addAttribute("estados", estadoService.listar());
         return "roles/form";
     }
 
@@ -36,6 +41,7 @@ public class RolController {
         Rol rol = rolService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado con ID: " + id));
         model.addAttribute("rol", rol);
+        model.addAttribute("estados", estadoService.listar());
         return "roles/form";
     }
 
@@ -44,6 +50,7 @@ public class RolController {
                           BindingResult result,
                           Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("estados", estadoService.listar());
             return "roles/form";
         }
         rolService.guardar(rol);

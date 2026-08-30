@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title th:text="${rol.idRol} == null ? 'Nuevo rol · Haven Glam Admin' : 'Editar rol · Haven Glam Admin'"></title>
+    <link rel="stylesheet" th:href="@{/css/rol.css}">
+</head>
+<body>
+
+<div class="container rol-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2 th:text="${rol.idRol} == null ? 'Nuevo rol' : 'Editar rol'"></h2>
+        </div>
+
+        <form th:action="@{/roles/guardar}" th:object="${rol}" method="post">
+
+            <input type="hidden" th:field="*{idRol}" />
+
+            <div class="admin-form-group">
+                <label for="nombreRol">Nombre del rol</label>
+                <input type="text" id="nombreRol" th:field="*{NombreRol}" />
+                <div class="admin-error" th:if="${#fields.hasErrors('nombreRol')}"
+                     th:errors="*{NombreRol}"></div>
+            </div>
+
+            <div class="admin-form-group">
+                <label for="estado">Estado</label>
+                <select id="estado" th:field="*{estado}">
+                    <option value="">Selecciona un estado</option>
+                    <option th:each="e : ${estados}"
+                            th:value="${e.idEstado}"
+                            th:text="${e.nombreEstado}"></option>
+                </select>
+                <div class="admin-error" th:if="${#fields.hasErrors('estado')}"
+                     th:errors="*{estado}"></div>
+            </div>
+
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a th:href="@{/roles}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script th:src="@{/js/rol.js}"></script>
+</body>
+</html>

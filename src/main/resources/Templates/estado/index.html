@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Estados · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/estado.css}">
+</head>
+<body>
+
+<div class="container estado-page">
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Estados</h2>
+            <a th:href="@{/estados/create}" class="btn btn-primary">+ Nuevo estado</a>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="estado : ${estados}">
+                <td th:text="${estado.nombreEstado}">Activo</td>
+                <td th:text="${estado.tipoEstado}">General</td>
+                <td class="admin-actions">
+                    <a th:href="@{'/estados/details/' + ${estado.idEstado}}" class="admin-icon-btn">Ver</a>
+                    <a th:href="@{'/estados/edit/' + ${estado.idEstado}}" class="admin-icon-btn">Editar</a>
+                    <a th:href="@{'/estados/delete/' + ${estado.idEstado}}" class="admin-icon-btn admin-icon-btn--danger">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${estados.isEmpty()}">
+                <td colspan="3" style="text-align:center; color: var(--muted); padding: 24px;">
+                    Aún no hay estados registrados.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script th:src="@{/js/estado.js}"></script>
+</body>
+</html>

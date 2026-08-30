@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Nuevo estado · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/estado.css}">
+</head>
+<body>
+
+<div class="container estado-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2>Nuevo estado</h2>
+        </div>
+
+        <form th:action="@{/estados/create}" th:object="${estado}" method="post">
+
+            <div class="admin-form-group">
+                <label for="nombreEstado">Nombre</label>
+                <input type="text" id="nombreEstado" th:field="*{nombreEstado}" />
+                <div class="admin-error" th:if="${#fields.hasErrors('nombreEstado')}"
+                     th:errors="*{nombreEstado}"></div>
+            </div>
+
+            <div class="admin-form-group">
+                <label for="tipoEstado">Tipo</label>
+                <input type="text" id="tipoEstado" th:field="*{tipoEstado}" />
+                <div class="admin-error" th:if="${#fields.hasErrors('tipoEstado')}"
+                     th:errors="*{tipoEstado}"></div>
+            </div>
+
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a th:href="@{/estados}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script th:src="@{/js/estado.js}"></script>
+</body>
+</html>

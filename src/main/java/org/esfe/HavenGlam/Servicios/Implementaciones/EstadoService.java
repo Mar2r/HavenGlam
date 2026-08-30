@@ -20,6 +20,12 @@ public class EstadoService implements IEstadoService
     public List<Estado> listar() {
         return estadoRepository.findAll();
     }
+
+    @Override
+    public List<Estado> listarPorTipo(String tipoEstado) {
+        return estadoRepository.findByTipoEstado(tipoEstado);
+    }
+
     @Override
     public Optional<Estado> buscarPorId(Integer id){
         return  estadoRepository.findById(id);

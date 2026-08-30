@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalle de estado · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/estado.css}">
+</head>
+<body>
+
+<div class="container estado-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2 th:text="${estado.nombreEstado}">Activo</h2>
+        </div>
+
+        <dl class="admin-detail-grid">
+            <div class="admin-detail-item">
+                <dt>ID</dt>
+                <dd th:text="${estado.idEstado}">1</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Nombre</dt>
+                <dd th:text="${estado.nombreEstado}">Activo</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Tipo</dt>
+                <dd th:text="${estado.tipoEstado}">General</dd>
+            </div>
+        </dl>
+
+        <div class="admin-form-actions">
+            <a th:href="@{'/estados/edit/' + ${estado.idEstado}}" class="btn btn-primary">Editar</a>
+            <a th:href="@{/estados}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/estado.js}"></script>
+</body>
+</html>

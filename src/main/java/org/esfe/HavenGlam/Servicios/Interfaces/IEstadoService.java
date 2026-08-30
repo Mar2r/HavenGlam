@@ -9,6 +9,8 @@ public interface IEstadoService {
 
     List<Estado> listar();
 
+    List<Estado> listarPorTipo(String tipoEstado);
+
     Optional<Estado> buscarPorId(Integer id);
 
     Estado guardar(Estado estado);

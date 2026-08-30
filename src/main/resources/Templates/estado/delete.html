@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Eliminar estado · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/estado.css}">
+</head>
+<body>
+
+<div class="container estado-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2>Eliminar estado</h2>
+        </div>
+
+        <div class="admin-warning-box">
+            ¿Estás seguro de que deseas eliminar el estado
+            <strong th:text="${estado.nombreEstado}">Activo</strong>?
+            Esta acción no se puede deshacer.
+            <br><br>
+            <em>Ten en cuenta que si otras categorías, roles, citas, etc. usan este estado, eliminarlo podría causar un error de integridad referencial en la base de datos.</em>
+        </div>
+
+        <form th:action="@{'/estados/delete/' + ${estado.idEstado}}" method="post">
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary" style="background:#8C2F2F;">Sí, eliminar</button>
+                <a th:href="@{/estados}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script th:src="@{/js/estado.js}"></script>
+</body>
+</html>

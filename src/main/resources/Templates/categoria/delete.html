@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Eliminar categoría · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/categoria.css}">
+</head>
+<body>
+
+<div class="container categoria-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2>Eliminar categoría</h2>
+        </div>
+
+        <div class="admin-warning-box">
+            ¿Estás seguro de que deseas eliminar la categoría
+            <strong th:text="${categoria.nombreCategoria}">Cabello</strong>?
+            Esta acción no se puede deshacer.
+        </div>
+
+        <form th:action="@{'/categorias/delete/' + ${categoria.idCategoria}}" method="post">
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary" style="background:#8C2F2F;">Sí, eliminar</button>
+                <a th:href="@{/categorias}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script th:src="@{/js/categoria.js}"></script>
+</body>
+</html>

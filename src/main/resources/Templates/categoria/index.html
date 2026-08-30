@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Categorías · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/categoria.css}">
+</head>
+<body>
+
+<div class="container categoria-page">
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Categorías</h2>
+            <a th:href="@{/categorias/create}" class="btn btn-primary">+ Nueva categoría</a>
+        </div>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="categoria : ${categorias}">
+                <td th:text="${categoria.nombreCategoria}">Cabello</td>
+                <td>
+                    <span class="admin-badge admin-badge--activo"
+                          th:text="${categoria.estado.nombreEstado}">Activo</span>
+                </td>
+                <td class="admin-actions">
+                    <a th:href="@{'/categorias/details/' + ${categoria.idCategoria}}" class="admin-icon-btn">Ver</a>
+                    <a th:href="@{'/categorias/edit/' + ${categoria.idCategoria}}" class="admin-icon-btn">Editar</a>
+                    <a th:href="@{'/categorias/delete/' + ${categoria.idCategoria}}" class="admin-icon-btn admin-icon-btn--danger">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${categorias.isEmpty()}">
+                <td colspan="3" style="text-align:center; color: var(--muted); padding: 24px;">
+                    Aún no hay categorías registradas.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script th:src="@{/js/categoria.js}"></script>
+</body>
+</html>

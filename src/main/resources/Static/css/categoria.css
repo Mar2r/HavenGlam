@@ -1,0 +1,147 @@
+:root {
+    --creme: #EEE4DA;
+    --sand: #D8C4AC;
+    --burgundy: #4D0E13;
+    --burgundy-rgb: 77, 14, 19;
+    --burgundy-dark: #34090D;
+    --ink: #2C1B18;
+    --muted: #7A655E;
+    --white: #FFFFFF;
+
+    --font-display: "Playfair Display", Georgia, serif;
+    --font-body: "Jost", "Segoe UI", sans-serif;
+
+    --radius-pill: 999px;
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+
+    --shadow-subtle: 0 4px 20px -2px rgba(44, 27, 24, 0.06);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background-color: var(--creme);
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+.categoria-page { padding: 48px 24px; }
+
+.admin-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 22px 24px;
+    box-shadow: var(--shadow-subtle);
+}
+.admin-card--form { max-width: 520px; margin: 0 auto; }
+
+.admin-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 12px;
+}
+.admin-card-header h2 {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--burgundy);
+    margin: 0;
+}
+
+.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 14px;
+    border-bottom: 2px solid var(--creme);
+}
+.admin-table td {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--creme);
+}
+.admin-table tr:hover td { background: rgba(var(--burgundy-rgb), 0.03); }
+
+.admin-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.admin-badge--activo { background: #E4EFE4; color: #2F6B2F; }
+.admin-badge--inactivo { background: #F3E4E4; color: #8C2F2F; }
+
+.admin-actions { display: flex; gap: 14px; }
+.admin-icon-btn { font-size: 0.85rem; color: var(--muted); text-decoration: none; }
+.admin-icon-btn:hover { color: var(--burgundy); }
+.admin-icon-btn--danger:hover { color: #8C2F2F; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: var(--radius-pill);
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn-primary { background: var(--burgundy); color: var(--white); }
+.btn-primary:hover { background: var(--burgundy-dark); }
+.btn-secondary { background: var(--creme); color: var(--burgundy); border-color: rgba(var(--burgundy-rgb), 0.15); }
+.btn-secondary:hover { background: var(--white); border-color: var(--burgundy); }
+
+.admin-form-group { margin-bottom: 18px; }
+.admin-form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+.admin-form-group input,
+.admin-form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(var(--burgundy-rgb), 0.18);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: var(--white);
+}
+.admin-form-group input:focus,
+.admin-form-group select:focus { outline: none; border-color: var(--burgundy); }
+
+.admin-error { color: #8C2F2F; font-size: 0.8rem; margin-top: 4px; }
+
+.admin-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 32px; margin-bottom: 20px; }
+.admin-detail-item dt {
+    font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 4px;
+}
+.admin-detail-item dd { margin: 0; font-size: 0.95rem; color: var(--ink); }
+
+.admin-warning-box {
+    background: #F3E4E4;
+    border: 1px solid rgba(140, 47, 47, 0.25);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    color: #6B2323;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.admin-form-actions { display: flex; gap: 10px; margin-top: 22px; }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalle de categoría · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/categoria.css}">
+</head>
+<body>
+
+<div class="container categoria-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2 th:text="${categoria.nombreCategoria}">Cabello</h2>
+        </div>
+
+        <dl class="admin-detail-grid">
+            <div class="admin-detail-item">
+                <dt>ID</dt>
+                <dd th:text="${categoria.idCategoria}">1</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Nombre</dt>
+                <dd th:text="${categoria.nombreCategoria}">Cabello</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Estado</dt>
+                <dd th:text="${categoria.estado.nombreEstado}">Activo</dd>
+            </div>
+        </dl>
+
+        <div class="admin-form-actions">
+            <a th:href="@{'/categorias/edit/' + ${categoria.idCategoria}}" class="btn btn-primary">Editar</a>
+            <a th:href="@{/categorias}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+
+</div>
+
+<script th:src="@{/js/categoria.js}"></script>
+</body>
+</html>

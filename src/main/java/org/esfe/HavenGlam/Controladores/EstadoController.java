@@ -6,53 +6,75 @@ import org.esfe.HavenGlam.Servicios.Interfaces.IEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.BindingResult;
 
 @Controller
 @RequestMapping("/estados")
-public class EstadoController
-{
+public class EstadoController {
+
     @Autowired
     private IEstadoService estadoService;
 
     @GetMapping
-    public String listar(Model model){
+    public String index(Model model) {
         model.addAttribute("estados", estadoService.listar());
-        return "estados/list";
+        return "estado/index";
     }
 
-    @GetMapping("/crear")
-    public String mostrarFormularioCrear(Model model){
+    @GetMapping("/create")
+    public String create(Model model) {
         model.addAttribute("estado", new Estado());
-        return "estados/form";
+        return "estado/create";
     }
 
-    @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
-        Estado estado = estadoService.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado con ID: " + id));
-        model.addAttribute("estado", estado);
-        return "estados/form";
-    }
-
-    @PostMapping("/guardar")
-    public String guardar(@Valid @ModelAttribute("estado") Estado estado,
-                          BindingResult result,
-                          Model model) {
+    @PostMapping("/create")
+    public String create(@Valid @ModelAttribute("estado") Estado estado, BindingResult result) {
         if (result.hasErrors()) {
-            return "estados/form";
+            return "estado/create";
         }
         estadoService.guardar(estado);
         return "redirect:/estados";
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        Estado estado = estadoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado con ID: " + id));
+        model.addAttribute("estado", estado);
+        return "estado/edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id,
+                       @Valid @ModelAttribute("estado") Estado estado,
+                       BindingResult result) {
+        if (result.hasErrors()) {
+            return "estado/edit";
+        }
+        estado.setIdEstado(id);
+        estadoService.guardar(estado);
+        return "redirect:/estados";
+    }
+
+    @GetMapping("/details/{id}")
+    public String details(@PathVariable Integer id, Model model) {
+        Estado estado = estadoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado con ID: " + id));
+        model.addAttribute("estado", estado);
+        return "estado/details";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Integer id, Model model) {
+        Estado estado = estadoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado con ID: " + id));
+        model.addAttribute("estado", estado);
+        return "estado/delete";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteConfirmed(@PathVariable Integer id) {
         estadoService.eliminar(id);
         return "redirect:/estados";
     }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Productos · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/producto.css}">
+</head>
+<body>
+<div class="container producto-page">
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Productos</h2>
+            <a th:href="@{/productos/crear}" class="btn btn-primary">Nuevo producto</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+            <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productos}">
+                <td th:text="${producto.idProducto}"></td>
+                <td th:text="${producto.nombreProducto}"></td>
+                <td th:text="${producto.categoria != null ? producto.categoria.nombreCategoria : ''}"></td>
+                <td th:text="${'$' + producto.precio}"></td>
+                <td th:text="${producto.stock}"></td>
+                <td th:text="${producto.estado != null ? producto.estado.nombreEstado : ''}"></td>
+                <td class="admin-table-actions">
+                    <a th:href="@{/productos/detalles/{id}(id=${producto.idProducto})}" class="btn btn-info">Ver</a>
+                    <a th:href="@{/productos/editar/{id}(id=${producto.idProducto})}" class="btn btn-secondary">Editar</a>
+                    <a th:href="@{/productos/eliminar/{id}(id=${producto.idProducto})}" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(productos)}">
+                <td colspan="7" class="admin-table-empty">No hay productos registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script th:src="@{/js/producto.js}"></script>
+</body>
+</html>

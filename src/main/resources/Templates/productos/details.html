@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalle del producto · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/producto.css}">
+</head>
+<body>
+<div class="container producto-page">
+    <div class="admin-card admin-card--details">
+        <div class="admin-card-header"><h2 th:text="${producto.nombreProducto}"></h2></div>
+        <dl class="admin-details-list">
+            <dt>ID</dt><dd th:text="${producto.idProducto}"></dd>
+            <dt>Nombre</dt><dd th:text="${producto.nombreProducto}"></dd>
+            <dt>Descripción</dt><dd th:text="${producto.descripcion != null ? producto.descripcion : 'Sin descripción'}"></dd>
+            <dt>Precio</dt><dd th:text="${'$' + producto.precio}"></dd>
+            <dt>Stock</dt><dd th:text="${producto.stock}"></dd>
+            <dt>Categoría</dt><dd th:text="${producto.categoria != null ? producto.categoria.nombreCategoria : ''}"></dd>
+            <dt>Estado</dt><dd th:text="${producto.estado != null ? producto.estado.nombreEstado : ''}"></dd>
+        </dl>
+        <div class="admin-form-actions">
+            <a th:href="@{/productos/editar/{id}(id=${producto.idProducto})}" class="btn btn-secondary">Editar</a>
+            <a th:href="@{/productos}" class="btn btn-primary">Volver al listado</a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/producto.js}"></script>
+</body>
+</html>

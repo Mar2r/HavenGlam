@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Eliminar producto · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/producto.css}">
+</head>
+<body>
+<div class="container producto-page">
+    <div class="admin-card admin-card--confirm">
+        <div class="admin-card-header"><h2>Eliminar producto</h2></div>
+        <p class="admin-confirm-text">
+            ¿Seguro que deseas eliminar el producto "<strong th:text="${producto.nombreProducto}"></strong>"?
+            Esta acción no se puede deshacer.
+        </p>
+        <form th:action="@{/productos/eliminar/{id}(id=${producto.idProducto})}" method="post">
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                <a th:href="@{/productos}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/producto.js}"></script>
+</body>
+</html>

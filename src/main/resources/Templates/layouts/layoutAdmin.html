@@ -158,15 +158,8 @@
                 <button class="profile-trigger" id="profileTrigger" aria-haspopup="true" aria-expanded="false">
                     <span class="profile-avatar" th:text="${nombreAdmin != null ? #strings.substring(nombreAdmin,0,1) : 'A'}">A</span>
                     <span class="profile-name" th:text="${nombreAdmin != null ? nombreAdmin : 'Administrador'}">Administrador</span>
-                    <svg class="profile-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                         stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
+
                 </button>
-                <div class="profile-menu" id="profileMenu">
-                    <a th:href="@{/admin/perfil}" href="/admin/perfil">Mi perfil</a>
-                    <a th:href="@{/logout}" href="/logout">Cerrar sesión</a>
-                </div>
             </div>
         </header>
 

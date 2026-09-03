@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión · Haven Glam</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap"
+            rel="stylesheet" />
+
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <link rel="stylesheet" href="../../Static/css/Auth.css" th:href="@{/css/auth.css}">
+</head>
+<body class="auth-body">
+
+<div class="auth-center-wrap">
+    <div class="auth-card auth-card--standalone">
+
+        <a th:href="@{/}" href="/" class="auth-brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+            </svg>
+            <span>
+                <span class="brand-title">Haven Glam</span>
+                <span class="brand-tagline">Sanctuary &amp; Beauty</span>
+            </span>
+        </a>
+
+        <h1>Inicia sesión</h1>
+        <p class="auth-sub">Accede para gestionar tus citas, tu perfil y tu historial.</p>
+
+        <div class="auth-alert" th:if="${param.error}">
+            Correo o contraseña incorrectos. Inténtalo de nuevo.
+        </div>
+        <div class="auth-notice" th:if="${param.logout}">
+            Tu sesión se cerró correctamente.
+        </div>
+        <div class="auth-notice" th:if="${param.claveActualizada}">
+            Tu contraseña fue actualizada. Ya puedes iniciar sesión.
+        </div>
+
+        <!--
+            NOTA PARA EL EQUIPO:
+            Este formulario envía "correo" y "contra" como nombres de campo,
+            para que coincidan con Usuario.correo y Usuario.contra.
+            En el SecurityConfig hay que configurar:
+                .usernameParameter("correo")
+                .passwordParameter("contra")
+            dentro de formLogin(), o Spring Security seguirá esperando
+            "username" / "password" por defecto.
+        -->
+        <form th:action="@{/login}" method="post">
+
+            <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+            <div class="auth-field">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" name="correo" placeholder="tucorreo@ejemplo.com" required autofocus />
+            </div>
+
+            <div class="auth-field">
+                <label for="contra">Contraseña</label>
+                <input type="password" id="contra" name="contra" placeholder="••••••••" required />
+            </div>
+
+            <div class="auth-remember">
+                <label><input type="checkbox" name="remember-me" /> Recordarme</label>
+                <a th:href="@{/recuperarClave}" href="recuperarClave.html">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="auth-submit">Entrar</button>
+        </form>
+
+        <p class="auth-foot">
+            ¿Aún no tienes cuenta? <a th:href="@{/clientes/crear}" href="#">Regístrate aquí</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

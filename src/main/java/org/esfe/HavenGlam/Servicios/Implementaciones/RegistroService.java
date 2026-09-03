@@ -11,6 +11,7 @@ import org.esfe.HavenGlam.Servicios.Interfaces.IEstadoService;
 import org.esfe.HavenGlam.Servicios.Interfaces.IRegistroService;
 import org.esfe.HavenGlam.Servicios.Interfaces.IRolService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,9 @@ public class RegistroService implements IRegistroService {
 
     @Autowired
     private IEstadoService estadoService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -101,7 +105,7 @@ public class RegistroService implements IRegistroService {
         Usuario usuario = new Usuario();
         usuario.setPersona(persona); // usa el IdPersona recién generado
         usuario.setCorreo(correo);
-        usuario.setContra(contra); // TODO (etapa de seguridad): cifrar con BCrypt
+        usuario.setContra(passwordEncoder.encode(contra)); // cifrado con BCrypt
         usuario.setRol(rol);
         usuario.setEstado(estado);
         usuarioRepository.save(usuario);

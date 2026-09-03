@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Nuevo empleado · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/empleados.css}">
+    <link rel="stylesheet" href="../../Static/css/empleados.css" th:href="@{/css/empleados.css}">
+</head>
+<body>
+
+<div class="container empleado-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2>Registrar nuevo empleado</h2>
+        </div>
+
+        <!-- Se muestra si RegistroService lanza IllegalStateException (ej. correo duplicado) -->
+        <div class="admin-error--box" th:if="${errorRegistro}" th:text="${errorRegistro}">
+            Ese correo ya está registrado.
+        </div>
+
+        <form th:action="@{/empleados/registrar}" th:object="${registroEmpleado}" method="post">
+
+            <div class="admin-form-row">
+                <div class="admin-form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" />
+                    <div class="admin-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" th:field="*{apellido}" />
+                    <div class="admin-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+                </div>
+            </div>
+
+            <div class="admin-form-row">
+                <div class="admin-form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" id="telefono" th:field="*{telefono}" />
+                    <div class="admin-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="dui">DUI</label>
+                    <input type="text" id="dui" th:field="*{dui}" />
+                    <div class="admin-error" th:if="${#fields.hasErrors('dui')}" th:errors="*{dui}"></div>
+                </div>
+            </div>
+
+            <div class="admin-form-group">
+                <label for="direccion">Dirección</label>
+                <input type="text" id="direccion" th:field="*{direccion}" />
+                <div class="admin-error" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
+            </div>
+
+            <div class="admin-form-row">
+                <div class="admin-form-group">
+                    <label for="correo">Correo electrónico</label>
+                    <input type="email" id="correo" th:field="*{correo}" />
+                    <div class="admin-error" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="contra">Contraseña temporal</label>
+                    <input type="password" id="contra" th:field="*{contra}" />
+                    <div class="admin-error" th:if="${#fields.hasErrors('contra')}" th:errors="*{contra}"></div>
+                </div>
+            </div>
+
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary">Registrar empleado</button>
+                <a th:href="@{/empleados}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

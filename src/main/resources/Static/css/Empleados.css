@@ -1,0 +1,96 @@
+:root{
+    --creme:#EEE4DA;
+    --sand:#D8C4AC;
+    --dusty:#C8A49F;
+    --burgundy:#4D0E13;
+    --ink:#2B1B16;
+    --muted:#8a7a6d;
+    --border:#e4d9cb;
+    --white:#FFFFFF;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+    margin:0;
+    font-family:'Jost', 'Segoe UI', sans-serif;
+    background:#f6f2ec;
+    color:var(--ink);
+}
+
+.container{ max-width:960px; margin:0 auto; padding:40px 24px; }
+
+.admin-card{
+    background:var(--white);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:32px;
+    box-shadow:0 2px 14px rgba(43,27,22,0.05);
+}
+
+.admin-card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:24px;
+}
+.admin-card-header h2{ margin:0; font-size:22px; color:var(--ink); }
+
+.admin-form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.admin-form-group{ margin-bottom:18px; }
+.admin-form-group label{
+    display:block;
+    font-size:13px;
+    color:var(--ink);
+    margin-bottom:6px;
+}
+.admin-form-group input{
+    width:100%;
+    padding:11px 14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    font-size:14px;
+    font-family:inherit;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease;
+}
+.admin-form-group input:focus{ border-color:var(--burgundy); }
+
+.admin-error{ margin-top:6px; font-size:12px; color:#B23A3A; }
+.admin-error--box{
+    background:#fbeceb;
+    border:1px solid #e7b7b3;
+    color:#8C2F2F;
+    padding:12px 16px;
+    border-radius:12px;
+    font-size:13.5px;
+    margin-bottom:20px;
+}
+
+.admin-form-actions{ display:flex; gap:12px; margin-top:8px; }
+
+.btn{
+    padding:11px 22px;
+    border-radius:999px;
+    font-size:14px;
+    text-decoration:none;
+    cursor:pointer;
+    border:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+}
+.btn-primary{ background:var(--burgundy); color:var(--creme); }
+.btn-primary:hover{ background:#3a0a0f; }
+.btn-secondary{ background:transparent; color:var(--muted); border:1px solid var(--border); }
+.btn-secondary:hover{ color:var(--ink); border-color:var(--ink); }
+
+@media (max-width:640px){
+    .admin-form-row{ grid-template-columns:1fr; }
+}

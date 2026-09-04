@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (sidebarToggleBtn && adminSidebar) {
         sidebarToggleBtn.addEventListener('click', function () {
-            const isOpen = adminSidebar.classList.toggle('is-open');
-            sidebarToggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            adminSidebar.classList.toggle('is-open');
         });
 
         document.addEventListener('click', function (event) {
@@ -15,26 +14,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const clickedToggle = sidebarToggleBtn.contains(event.target);
             if (!clickedInsideSidebar && !clickedToggle) {
                 adminSidebar.classList.remove('is-open');
-                sidebarToggleBtn.setAttribute('aria-expanded', 'false');
             }
         });
     }
 
     // Menú de perfil (dropdown)
     const profileTrigger = document.getElementById('profileTrigger');
-    const topbarProfile = profileTrigger ? profileTrigger.closest('.topbar-profile') : null;
+    const topbarProfile = document.getElementById('topbarProfile');
 
     if (profileTrigger && topbarProfile) {
         profileTrigger.addEventListener('click', function (event) {
             event.stopPropagation();
-            const isOpen = topbarProfile.classList.toggle('is-open');
-            profileTrigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            topbarProfile.classList.toggle('is-open');
         });
 
         document.addEventListener('click', function (event) {
             if (!topbarProfile.contains(event.target)) {
                 topbarProfile.classList.remove('is-open');
-                profileTrigger.setAttribute('aria-expanded', 'false');
             }
         });
     }

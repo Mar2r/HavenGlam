@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Empleados · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/empleados.css}">
+    <link rel="stylesheet" href="../../Static/css/empleados.css" th:href="@{/css/empleados.css}">
+</head>
+<body>
+<div class="container empleado-page">
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Empleados</h2>
+            <a th:href="@{/empleados/crear}" class="btn btn-primary">Nuevo empleado</a>
+        </div>
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="empleado : ${empleados}">
+                <td th:text="${empleado.idEmpleado}"></td>
+                <td th:text="${empleado.persona != null ? empleado.persona.nombre : ''}"></td>
+                <td th:text="${empleado.persona != null ? empleado.persona.apellido : ''}"></td>
+                <td th:text="${empleado.persona != null ? empleado.persona.telefono : ''}"></td>
+                <td th:text="${empleado.estado != null ? empleado.estado.nombreEstado : ''}"></td>
+                <td class="admin-table-actions">
+                    <a th:href="@{/empleados/editar/{id}(id=${empleado.idEmpleado})}" class="btn btn-secondary">Editar</a>
+                    <a th:href="@{/empleados/eliminar/{id}(id=${empleado.idEmpleado})}" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(empleados)}">
+                <td colspan="6" class="admin-table-empty">No hay empleados registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

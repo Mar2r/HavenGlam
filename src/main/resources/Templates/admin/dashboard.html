@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutAdmin}">
+
+<th:block layout:fragment="content">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-main">
+            <div class="eyebrow">Ingresos de hoy</div>
+            <div class="figure">$<span th:text="${#numbers.formatDecimal(ingresosHoy, 1, 'COMMA', 2, 'POINT')}">0.00</span></div>
+
+            <div class="delta" th:if="${variacionPorcentual != null}"
+                 th:classappend="${variacionPorcentual < 0} ? 'delta-down' : ''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 15l6-6 4 4 6-8"/></svg>
+                <span th:text="${(variacionPorcentual >= 0 ? '+' : '') + #numbers.formatDecimal(variacionPorcentual, 1, 1) + '% vs. el mismo día de la semana pasada'}">—</span>
+            </div>
+            <div class="delta" th:unless="${variacionPorcentual != null}">
+                <span>Sin datos de la semana pasada para comparar</span>
+            </div>
+        </div>
+
+        <div class="hero-stat">
+            <div class="num" th:text="${citasHoyCount}">0</div>
+            <div class="lbl">Citas agendadas hoy</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num" th:text="${clientasEstaSemana}">0</div>
+            <div class="lbl">Clientas atendidas esta semana</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num" th:text="${ocupacionPorcentaje} + '%'">0%</div>
+            <div class="lbl">Ocupación estimada del salón</div>
+        </div>
+    </section>
+
+    <!-- GRID -->
+    <section class="grid">
+
+        <!-- AGENDA -->
+        <div class="panel">
+            <div class="panel-head">
+                <h2>Agenda de hoy</h2>
+                <a th:href="@{/citas}" href="/citas" class="more">Ver todas las citas</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(agenda)}" class="empty-note">No hay citas programadas para hoy.</div>
+
+            <div class="agenda" th:unless="${#lists.isEmpty(agenda)}">
+                <div class="agenda-item" th:each="item : ${agenda}" th:classappend="${item.esAhora} ? 'now' : ''">
+                    <div class="agenda-time">
+                        <span class="dot"></span>
+                        <span th:text="${#temporals.format(item.hora, 'HH:mm')}">--:--</span>
+                    </div>
+                    <div>
+                        <div class="agenda-client" th:text="${item.cliente}">Cliente</div>
+                        <div class="agenda-service" th:text="${item.servicio + ' — ' + item.empleado}">Servicio — Empleado</div>
+                    </div>
+                    <span class="agenda-tag" th:classappend="${item.tagClass}" th:text="${item.estado}">Estado</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA -->
+        <div style="display:flex; flex-direction:column; gap:24px;">
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2>Mezcla de servicios</h2>
+                </div>
+
+                <div th:if="${#lists.isEmpty(mezclaServicios)}" class="empty-note">Aún no hay servicios registrados este mes.</div>
+
+                <div class="donut-wrap" th:unless="${#lists.isEmpty(mezclaServicios)}">
+                    <svg width="120" height="120" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="46" fill="none" stroke="#EEE4DA" stroke-width="16"/>
+                        <circle th:each="slice : ${mezclaServicios}"
+                                cx="60" cy="60" r="46" fill="none"
+                                th:stroke="${slice.color}" stroke-width="16"
+                                th:stroke-dasharray="${slice.dashArray}"
+                                th:stroke-dashoffset="${slice.dashOffset}"
+                                stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                    </svg>
+                    <div class="legend">
+                        <div class="legend-row" th:each="slice : ${mezclaServicios}">
+                            <span class="sw" th:style="'background:' + ${slice.color}"></span>
+                            <span th:text="${slice.nombre}">Categoría</span>
+                            <span class="pct" th:text="${slice.porcentaje} + '%'">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2>Carga del equipo</h2>
+                </div>
+
+                <div th:if="${#lists.isEmpty(cargaEquipo)}" class="empty-note">No hay empleados activos.</div>
+
+                <div th:each="row : ${cargaEquipo}" class="staff-row">
+                    <span class="name" th:text="${row.nombre}">Nombre</span>
+                    <div class="bar-track"><div class="bar-fill" th:style="'width:' + ${row.porcentaje} + '%'"></div></div>
+                    <span class="pct" th:text="${row.porcentaje} + '%'">0%</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- TABLA -->
+    <section class="panel">
+        <div class="panel-head">
+            <h2>Próximas reservas</h2>
+            <a th:href="@{/citas}" href="/citas" class="more">Ver todas</a>
+        </div>
+
+        <div th:if="${#lists.isEmpty(proximasReservas)}" class="empty-note">No hay reservas próximas.</div>
+
+        <div class="table-wrap" th:unless="${#lists.isEmpty(proximasReservas)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Clienta</th>
+                    <th>Servicio</th>
+                    <th>Estilista</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${proximasReservas}">
+                    <td>
+                        <div class="client-cell">
+                            <span class="client-dot" th:text="${#strings.substring(r.cliente,0,1)}">C</span>
+                            <span th:text="${r.cliente}">Cliente</span>
+                        </div>
+                    </td>
+                    <td th:text="${r.servicio}">Servicio</td>
+                    <td th:text="${r.empleado}">Empleado</td>
+                    <td th:text="${r.fechaLabel}">Fecha</td>
+                    <td><span class="status-pill" th:classappend="${r.pillClass}" th:text="${r.estado}">Estado</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</th:block>
+
+</html>

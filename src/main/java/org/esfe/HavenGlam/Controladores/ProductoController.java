@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 @Controller
 @RequestMapping("/productos")
 public class ProductoController {
+
     @Autowired
     private IProductoService productoService;
 
@@ -24,12 +25,12 @@ public class ProductoController {
     private IEstadoService estadoService;
 
     @GetMapping
-    public String Index(Model model) {
+    public String index(Model model) {
         model.addAttribute("productos", productoService.listar());
         return "productos/index";
     }
 
-    @GetMapping("/create")
+    @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("producto", new Producto());
         model.addAttribute("categorias", categoriaService.listar());
@@ -37,7 +38,20 @@ public class ProductoController {
         return "productos/create";
     }
 
-    @GetMapping("/edit/{id}")
+    @PostMapping("/crear")
+    public String crear(@Valid @ModelAttribute("producto") Producto producto,
+                        BindingResult result,
+                        Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("categorias", categoriaService.listar());
+            model.addAttribute("estados", estadoService.listar());
+            return "productos/create";
+        }
+        productoService.guardar(producto);
+        return "redirect:/productos";
+    }
+
+    @GetMapping("/editar/{id}")
     public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
         Producto producto = productoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
@@ -47,20 +61,38 @@ public class ProductoController {
         return "productos/edit";
     }
 
-    @PostMapping("/create")
-    public String guardar(@Valid @ModelAttribute("producto") Producto producto,
-                          BindingResult result,
-                          Model model) {
+    @PostMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id,
+                         @Valid @ModelAttribute("producto") Producto producto,
+                         BindingResult result,
+                         Model model) {
         if (result.hasErrors()) {
             model.addAttribute("categorias", categoriaService.listar());
             model.addAttribute("estados", estadoService.listar());
-            return "productos/index";
+            return "productos/edit";
         }
+        producto.setIdProducto(id);
         productoService.guardar(producto);
         return "redirect:/productos";
     }
 
+    @GetMapping("/detalles/{id}")
+    public String detalles(@PathVariable Integer id, Model model) {
+        Producto producto = productoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+        model.addAttribute("producto", producto);
+        return "productos/details";
+    }
+
     @GetMapping("/eliminar/{id}")
+    public String mostrarConfirmacionEliminar(@PathVariable Integer id, Model model) {
+        Producto producto = productoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+        model.addAttribute("producto", producto);
+        return "productos/delete";
+    }
+
+    @PostMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         productoService.eliminar(id);
         return "redirect:/productos";

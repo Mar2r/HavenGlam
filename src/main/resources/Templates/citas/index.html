@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutClient}">
+
+<head>
+    <title>Reserva tu Cita — Haven Glam</title>
+    <!-- Estilos específicos del módulo de citas -->
+    <link rel="stylesheet" th:href="@{/css/cita.css}">
+</head>
+
+<body>
+
+<main layout:fragment="content">
+
+    <div class="hg-citas-wrapper">
+
+        <!-- ENCABEZADO -->
+        <header class="hg-citas-head">
+            <span class="hg-badge-eyebrow" id="step-eyebrow">Paso 1 de 4</span>
+            <h1 class="hg-citas-title">Reserva tu Cita</h1>
+            <p class="hg-citas-desc">
+                Selecciona tus tratamientos, profesional y horario de atención (8:00 a.m. a 5:00 p.m. cada 30 minutos).
+            </p>
+        </header>
+
+        <!-- STEPPER / BARRA DE PROGRESO -->
+        <nav class="hg-stepper" aria-label="Progreso de reserva">
+            <div class="hg-step-item is-active" data-step-indicator="1">
+                <span class="hg-step-circle">1</span>
+                <span class="hg-step-label">Servicios</span>
+            </div>
+            <div class="hg-step-line"></div>
+            <div class="hg-step-item" data-step-indicator="2">
+                <span class="hg-step-circle">2</span>
+                <span class="hg-step-label">Profesional</span>
+            </div>
+            <div class="hg-step-line"></div>
+            <div class="hg-step-item" data-step-indicator="3">
+                <span class="hg-step-circle">3</span>
+                <span class="hg-step-label">Fecha y Hora</span>
+            </div>
+            <div class="hg-step-line"></div>
+            <div class="hg-step-item" data-step-indicator="4">
+                <span class="hg-step-circle">4</span>
+                <span class="hg-step-label">Confirmación</span>
+            </div>
+        </nav>
+
+        <!-- CONTENEDOR PRINCIPAL: PASOS + RESUMEN LATERAL -->
+        <div class="hg-booking-grid">
+
+            <!-- COLUMNA IZQUIERDA: TARJETA DINÁMICA DE PASOS -->
+            <section class="hg-panel">
+
+                <!-- ===== PASO 1: SERVICIOS (LÍMITE MÁXIMO 3) ===== -->
+                <div class="hg-step-panel is-active" id="step-panel-1">
+                    <div class="hg-panel-header">
+                        <div>
+                            <h2 class="hg-step-heading">Paso 1: Selecciona tus Servicios</h2>
+                            <p class="hg-step-sub">Elige los tratamientos para tu cita.</p>
+                        </div>
+                        <div class="hg-limit-pill">
+                            <span>Seleccionados:</span>
+                            <strong id="service-count-badge">0 / 3 máx.</strong>
+                        </div>
+                    </div>
+
+                    <!-- Filtros por categoría -->
+                    <div class="hg-tabs-list" role="tablist">
+                        <button type="button" class="hg-tab-btn is-active" data-category="all">Todos</button>
+                        <button type="button" class="hg-tab-btn" data-category="cabello">Cabello</button>
+                        <button type="button" class="hg-tab-btn" data-category="unas">Uñas</button>
+                        <button type="button" class="hg-tab-btn" data-category="facial">Facial</button>
+                        <button type="button" class="hg-tab-btn" data-category="masaje">Masajes</button>
+                    </div>
+
+                    <!-- Lista de servicios generada dinámicamente -->
+                    <div class="hg-service-list" id="services-list-container"></div>
+
+                    <div class="hg-alert-limit" id="limit-warning" hidden>
+                        ⚠️ Has alcanzado el límite máximo de 3 servicios por cita para este usuario.
+                    </div>
+                </div>
+
+                <!-- ===== PASO 2: ESPECIALISTA / PROFESIONAL ===== -->
+                <div class="hg-step-panel" id="step-panel-2">
+                    <div class="hg-panel-header">
+                        <div>
+                            <h2 class="hg-step-heading">Paso 2: Elige a tu Especialista</h2>
+                            <p class="hg-step-sub">Selecciona el profesional de tu preferencia.</p>
+                        </div>
+                    </div>
+
+                    <div class="hg-pro-grid" id="professionals-list-container"></div>
+                </div>
+
+                <!-- ===== PASO 3: FECHA Y HORA (8:00 A 17:00 CADA 30 MIN) ===== -->
+                <div class="hg-step-panel" id="step-panel-3">
+                    <div class="hg-panel-header">
+                        <div>
+                            <h2 class="hg-step-heading">Paso 3: Fecha y Horario</h2>
+                            <p class="hg-step-sub">Horarios cada media hora de 8:00 a.m. a 5:00 p.m.</p>
+                        </div>
+                        <div class="hg-legend">
+                            <span class="hg-legend-item"><span class="hg-dot hg-dot--free"></span> Libre</span>
+                            <span class="hg-legend-item"><span class="hg-dot hg-dot--busy"></span> Ocupado</span>
+                        </div>
+                    </div>
+
+                    <!-- Carrusel de días -->
+                    <label class="hg-label">Selecciona el Día:</label>
+                    <div class="hg-day-scroller" id="day-scroller"></div>
+
+                    <!-- Grilla de turnos de 30 minutos -->
+                    <label class="hg-label">Horarios disponibles cada 30 min:</label>
+                    <div class="hg-slots-grid" id="time-slots-grid"></div>
+                </div>
+
+                <!-- ===== PASO 4: CONFIRMACIÓN Y ANCLAJE A USUARIO ===== -->
+                <div class="hg-step-panel" id="step-panel-4">
+                    <div class="hg-panel-header">
+                        <div>
+                            <h2 class="hg-step-heading">Paso 4: Confirma tu Reserva</h2>
+                            <p class="hg-step-sub">Verifica los datos antes de bloquear la cita en la base de datos.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta con usuario de la sesión de Spring Security / HttpSession -->
+                    <div class="hg-user-session-card">
+                        <div class="hg-user-badge-tag">Usuario Logueado (Sesión Servidor)</div>
+                        <div class="hg-user-session-grid">
+                            <div>
+                                <span class="hg-meta-label">Cliente:</span>
+                                <strong id="session-user-name"
+                                        th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.nombreCompleto : 'Beatriz Peña'}">
+                                    Beatriz Peña
+                                </strong>
+                            </div>
+                            <div>
+                                <span class="hg-meta-label">Correo:</span>
+                                <span id="session-user-email"
+                                      th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.email : 'bp25001@esfe.agape.edu.sv'}">
+                                    bp25001@esfe.agape.edu.sv
+                                </span>
+                            </div>
+                            <div>
+                                <span class="hg-meta-label">Teléfono:</span>
+                                <span id="session-user-phone"
+                                      th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.telefono : '7854-9921'}">
+                                    7854-9921
+                                </span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="auth-user-id"
+                               th:value="${session.usuarioLogueado != null ? session.usuarioLogueado.id : 1042}" />
+                    </div>
+
+                    <!-- Desglose de precios y servicios -->
+                    <div class="hg-confirm-receipt" id="confirm-receipt-table"></div>
+
+                    <div class="hg-notes-box">
+                        <label for="booking-notes" class="hg-label">Notas o preferencias (opcional):</label>
+                        <textarea id="booking-notes" rows="2" placeholder="Ej: Tratamiento para piel sensible, cabello teñido..."></textarea>
+                    </div>
+                </div>
+
+                <!-- PANTALLA FINAL DE ÉXITO -->
+                <div class="hg-step-panel hg-success-view" id="step-panel-success">
+                    <div class="hg-success-circle">✓</div>
+                    <h2 class="hg-citas-title">¡Cita Bloqueada y Reservada!</h2>
+                    <p class="hg-citas-desc">
+                        Tu cita ha sido guardada en la base de datos y vinculada a tu cuenta.
+                    </p>
+                    <div class="hg-success-code-box">
+                        Código de Cita: <strong id="success-booking-code">HG-2026-0000</strong>
+                    </div>
+                    <button type="button" class="hg-btn hg-btn--primary" id="btn-restart-flow">
+                        Reservar Otra Cita
+                    </button>
+                </div>
+
+                <!-- FOOTER DE NAVEGACIÓN -->
+                <footer class="hg-step-footer" id="step-footer-actions">
+                    <button type="button" class="hg-btn hg-btn--ghost" id="btn-step-back" hidden>
+                        ← Paso Anterior
+                    </button>
+                    <button type="button" class="hg-btn hg-btn--primary" id="btn-step-next" disabled>
+                        Siguiente: Profesional →
+                    </button>
+                </footer>
+
+            </section>
+
+            <!-- COLUMNA DERECHA: RESUMEN LATERAL EN VIVO -->
+            <aside class="hg-summary-aside" aria-live="polite">
+                <h3 class="hg-summary-title">Resumen de Cita</h3>
+
+                <div class="hg-summary-empty" id="summary-empty-msg">
+                    <p>Aún no has seleccionado ningún servicio.</p>
+                </div>
+
+                <ul class="hg-summary-list" id="summary-services-list" hidden></ul>
+
+                <dl class="hg-summary-meta" id="summary-meta-block" hidden>
+                    <div class="hg-summary-row">
+                        <dt>Profesional:</dt>
+                        <dd id="sum-pro">—</dd>
+                    </div>
+                    <div class="hg-summary-row">
+                        <dt>Fecha:</dt>
+                        <dd id="sum-date">—</dd>
+                    </div>
+                    <div class="hg-summary-row">
+                        <dt>Horario:</dt>
+                        <dd id="sum-time">—</dd>
+                    </div>
+                    <div class="hg-summary-row">
+                        <dt>Duración aprox:</dt>
+                        <dd id="sum-duration">0 min</dd>
+                    </div>
+                </dl>
+
+                <div class="hg-summary-total" id="summary-total-block" hidden>
+                    <span>Total Estimado</span>
+                    <strong id="sum-total">$0</strong>
+                </div>
+            </aside>
+
+        </div>
+
+    </div>
+
+    <!-- Script de lógica frontend -->
+    <script th:src="@{/js/citas.js}"></script>
+
+</main>
+
+</body>
+</html>

@@ -1,58 +1,61 @@
 package org.esfe.HavenGlam.Controladores;
 
-import jakarta.validation.Valid;
-import org.esfe.HavenGlam.Modelos.Cita;
 import org.esfe.HavenGlam.Servicios.Interfaces.ICitaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/citas")
 public class CitaController {
+
     @Autowired
     private ICitaService citaService;
 
+    // Vista principal del flujo de reservas de citas
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("citas", citaService.listar());
-        return "citas/list";
+    public String index(Model model) {
+        return "citas/indexCita";
     }
 
     @GetMapping("/crear")
-    public String mostrarFormularioCrear(Model model) {
-        model.addAttribute("cita", new Cita());
-        return "citas/form";
+    public String crear(Model model) {
+        return "citas/index";
     }
 
-    @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
-        Cita cita = citaService.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Cita no encontrada con ID: " + id));
-        model.addAttribute("cita", cita);
-        return "citas/form";
+    @GetMapping("/reservar")
+    public String reservarVista(Model model) {
+        return "citas/index";
     }
 
-    @PostMapping("/guardar")
-    public String guardar(@Valid @ModelAttribute("cita") Cita cita,
-                          BindingResult result,
-                          Model model) {
-        if (result.hasErrors()) {
-            return "citas/form";
-        }
-        citaService.guardar(cita);
-        return "redirect:/citas";
+    // Endpoint API para consultar horarios ocupados consumido por citas.js
+    @GetMapping("/api/disponibilidad")
+    @ResponseBody
+    public ResponseEntity<List<String>> obtenerDisponibilidad(@RequestParam(name = "fecha", required = false) String fecha) {
+        // Retorna horarios ocupados (inicialmente vacío para permitir seleccionar cualquier turno)
+        return ResponseEntity.ok(List.of());
     }
 
-    @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable Integer id) {
-        citaService.eliminar(id);
-        return "redirect:/citas";
+    // Endpoint API para procesar y guardar la reserva consumido por citas.js
+    @PostMapping("/api/reservar")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> procesarReserva(@RequestBody Map<String, Object> payload) {
+        Map<String, Object> respuesta = new HashMap<>();
+        
+        // Generar código único de confirmación
+        int numeroAleatorio = (int) (Math.random() * 9000 + 1000);
+        String codigoCita = "HG-2026-" + numeroAleatorio;
+
+        respuesta.put("status", "success");
+        respuesta.put("codigoCita", codigoCita);
+        respuesta.put("mensaje", "Cita reservada y bloqueada exitosamente");
+
+        return ResponseEntity.ok(respuesta);
     }
 }

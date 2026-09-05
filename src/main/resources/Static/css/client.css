@@ -569,6 +569,41 @@ p {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.55);
 }
+.nav-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px 6px 6px;
+    border-radius: var(--radius-pill);
+    background: rgba(var(--white-rgb), 0.7);
+    border: 1px solid rgba(var(--burgundy-rgb), 0.2);
+    color: var(--burgundy);
+    font-size: 0.9rem;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
+}
+.nav-user-chip:hover {
+    background: var(--white);
+    border-color: var(--burgundy);
+}
+.nav-user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--burgundy);
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.nav-user-chip--mobile {
+    justify-content: center;
+    width: 100%;
+    padding: 10px 16px;
+}
 
 @media (min-width: 768px) {
     .footer-bottom {

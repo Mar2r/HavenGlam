@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mi Agenda · Haven Glam</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-app">
+<div style="max-width:960px; margin:0 auto; padding:40px 20px;">
+
+    <div style="margin-bottom:24px;">
+        <h1 style="font-family:'Fraunces', serif; font-weight:400; font-size:28px;">
+            Hola, <span th:text="${nombreEmpleado}">Empleado</span>
+        </h1>
+        <p style="color:#5B4A42;">Estas son tus citas de hoy.</p>
+    </div>
+
+    <div class="panel">
+        <div class="panel-head">
+            <h2>Agenda de hoy</h2>
+        </div>
+
+        <div th:if="${#lists.isEmpty(citasHoy)}" class="empty-note">
+            No tienes citas programadas para hoy.
+        </div>
+
+        <div class="table-wrap" th:unless="${#lists.isEmpty(citasHoy)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Hora</th>
+                    <th>Cliente</th>
+                    <th>Observaciones</th>
+                    <th>Estado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cita : ${citasHoy}">
+                    <td th:text="${#temporals.format(cita.hora, 'HH:mm')}"></td>
+                    <td th:text="${cita.cliente.persona.nombre + ' ' + cita.cliente.persona.apellido}"></td>
+                    <td th:text="${cita.observaciones}"></td>
+                    <td th:text="${cita.estado != null ? cita.estado.nombreEstado : ''}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="margin-top:20px;">
+        <a th:href="@{/logout}" class="btn btn-secondary">Cerrar sesión</a>
+    </div>
+
+</div>
+</body>
+</html>

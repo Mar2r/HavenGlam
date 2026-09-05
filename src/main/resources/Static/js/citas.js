@@ -1,7 +1,7 @@
 /**
  * HAVEN GLAM — citas.js
  * Lógica del Stepper, Selección de Servicios (máx 3),
- * Grilla de 8:00 a 17:00 cada 30 min y consumo de API Java MVC.
+ * Grilla de horarios y consumo de datos reales del backend Java.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,43 +12,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingState = {
         currentStep: 1,
         maxServices: 3,
-        selectedServices: [], // Array de objetos { id, name, price, duration, category }
-        selectedProfessional: null, // Objeto { id, name, role }
-        selectedDate: null, // "YYYY-MM-DD"
-        selectedTime: null, // "09:30"
+        dayOffset: 0,
+        catalogServices: [],
+        professionals: [],
+        selectedServices: [],
+        selectedProfessional: null,
+        selectedDate: null,
+        selectedTime: null,
         totalPrice: 0,
         totalDuration: 0,
         notes: ''
     };
 
-    // ==========================================
-    // 2. CATÁLOGO BASE DE SERVICIOS Y PROFESIONALES
-    // (En producción pueden venir inyectados por Thymeleaf o de un endpoint GET)
-    // ==========================================
-    const CATALOG_SERVICES = [
-        { id: 1, name: 'Corte de Cabello & Styling', category: 'cabello', price: 25, duration: 45 },
-        { id: 2, name: 'Tinte Completo & Hidratación', category: 'cabello', price: 65, duration: 90 },
-        { id: 3, name: 'Manicura Rusa con Esmaltado Semipermanente', category: 'unas', price: 28, duration: 45 },
-        { id: 4, name: 'Pedicura Spa & Masaje Relajante', category: 'unas', price: 35, duration: 60 },
-        { id: 5, name: 'Facial Hidratante Glow Profundo', category: 'facial', price: 50, duration: 60 },
-        { id: 6, name: 'Limpieza Facial con Microdermoabrasión', category: 'facial', price: 60, duration: 75 },
-        { id: 7, name: 'Masaje Descontracturante de Espalda', category: 'masaje', price: 40, duration: 45 },
-        { id: 8, name: 'Tratamiento Capilar Keratina Brillo Espejo', category: 'cabello', price: 80, duration: 120 }
-    ];
-
-    const PROFESSIONALS = [
-        { id: 1, name: 'Valeria Quintanilla', role: 'Master Estilista & Colorista', avatar: 'VQ' },
-        { id: 2, name: 'Camila Morales', role: 'Especialista en Uñas & Spa', avatar: 'CM' },
-        { id: 3, name: 'Sofía Herrera', role: 'Cosmiatra & Terapeuta Facial', avatar: 'SH' },
-        { id: 4, name: 'Cualquier Profesional', role: 'Asignación según disponibilidad', avatar: '★' }
-    ];
+    const MAX_DAY_OFFSET = 84; // 12 semanas hacia adelante
 
     // ==========================================
-    // 3. GENERACIÓN DE TURNOS (08:00 A 17:00 CADA 30 MIN)
+    // 2. GENERACIÓN DE TURNOS (08:00 A 17:00 CADA 30 MIN)
     // ==========================================
     function generateDailyTimeSlots() {
         const slots = [];
-        // De 8 a 17 horas
         for (let hour = 8; hour <= 17; hour++) {
             const hStr = hour.toString().padStart(2, '0');
             slots.push(`${hStr}:00`);
@@ -60,15 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const ALL_SLOTS = generateDailyTimeSlots();
 
-    // Simulación de turnos ocupados en BD (para conectar a /citas/api/disponibilidad)
-    const MOCK_OCCUPIED_SLOTS = {
-        '2026-09-04': ['08:30', '10:00', '14:00', '15:30'],
-        '2026-09-05': ['09:00', '11:30', '13:00'],
-        '2026-09-06': ['10:30', '11:00', '16:00']
-    };
-
     // ==========================================
-    // 4. ELEMENTOS DEL DOM
+    // 3. ELEMENTOS DEL DOM
     // ==========================================
     const stepPanels = {
         1: document.getElementById('step-panel-1'),
@@ -84,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnBack = document.getElementById('btn-step-back');
     const footerActions = document.getElementById('step-footer-actions');
 
+    const categoryTabsContainer = document.getElementById('category-tabs-container');
     const servicesContainer = document.getElementById('services-list-container');
     const serviceCountBadge = document.getElementById('service-count-badge');
     const limitWarning = document.getElementById('limit-warning');
@@ -92,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const dayScroller = document.getElementById('day-scroller');
     const timeSlotsGrid = document.getElementById('time-slots-grid');
 
-    // Resumen lateral
     const summaryEmptyMsg = document.getElementById('summary-empty-msg');
     const summaryList = document.getElementById('summary-services-list');
     const summaryMeta = document.getElementById('summary-meta-block');
@@ -104,24 +79,84 @@ document.addEventListener('DOMContentLoaded', () => {
     const sumTotal = document.getElementById('sum-total');
 
     // ==========================================
-    // 5. INICIALIZACIÓN
+    // 4. INICIALIZACIÓN
     // ==========================================
-    renderServices('all');
-    renderProfessionals();
+    loadInitialData();
     renderDayScroller();
-    setupCategoryTabs();
+    setupDayNavButtons();
     setupNavigationButtons();
+
+    // ==========================================
+    // 5. CARGA DE DATOS REALES (SERVICIOS / EMPLEADOS)
+    // ==========================================
+    async function loadInitialData() {
+        try {
+            const [serviciosRes, empleadosRes] = await Promise.all([
+                fetch('/citas/api/servicios', { headers: { 'Accept': 'application/json' } }),
+                fetch('/citas/api/empleados', { headers: { 'Accept': 'application/json' } })
+            ]);
+
+            bookingState.catalogServices = serviciosRes.ok ? await serviciosRes.json() : [];
+            bookingState.professionals = empleadosRes.ok ? await empleadosRes.json() : [];
+        } catch (error) {
+            console.error('Error cargando datos del servidor:', error);
+            bookingState.catalogServices = [];
+            bookingState.professionals = [];
+        }
+
+        buildCategoryTabs();
+        renderServices('all');
+        renderProfessionals();
+    }
 
     // ==========================================
     // 6. RENDERIZADO DEL PASO 1 (SERVICIOS)
     // ==========================================
+    function buildCategoryTabs() {
+        if (!categoryTabsContainer) return;
+
+        const categorias = [...new Set(bookingState.catalogServices.map(s => s.category))].sort();
+
+        categoryTabsContainer.innerHTML = '';
+
+        const btnTodos = document.createElement('button');
+        btnTodos.type = 'button';
+        btnTodos.className = 'hg-tab-btn is-active';
+        btnTodos.dataset.category = 'all';
+        btnTodos.textContent = 'Todos';
+        categoryTabsContainer.appendChild(btnTodos);
+
+        categorias.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'hg-tab-btn';
+            btn.dataset.category = cat;
+            btn.textContent = cat;
+            categoryTabsContainer.appendChild(btn);
+        });
+
+        categoryTabsContainer.querySelectorAll('.hg-tab-btn').forEach(tab => {
+            tab.addEventListener('click', () => {
+                categoryTabsContainer.querySelectorAll('.hg-tab-btn').forEach(t => t.classList.remove('is-active'));
+                tab.classList.add('is-active');
+                renderServices(tab.dataset.category);
+            });
+        });
+    }
+
     function renderServices(categoryFilter = 'all') {
         if (!servicesContainer) return;
         servicesContainer.innerHTML = '';
 
+        if (bookingState.catalogServices.length === 0) {
+            servicesContainer.innerHTML = '<p class="hg-empty-msg">Aún no hay servicios disponibles. Vuelve pronto.</p>';
+            updateServiceBadges();
+            return;
+        }
+
         const filtered = categoryFilter === 'all'
-            ? CATALOG_SERVICES
-            : CATALOG_SERVICES.filter(s => s.category === categoryFilter);
+            ? bookingState.catalogServices
+            : bookingState.catalogServices.filter(s => s.category === categoryFilter);
 
         filtered.forEach(srv => {
             const isSelected = bookingState.selectedServices.some(s => s.id === srv.id);
@@ -159,11 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const index = bookingState.selectedServices.findIndex(s => s.id === srv.id);
 
         if (index > -1) {
-            // Deseleccionar
             bookingState.selectedServices.splice(index, 1);
             if (limitWarning) limitWarning.hidden = true;
         } else {
-            // Verificar límite de 3
             if (bookingState.selectedServices.length >= bookingState.maxServices) {
                 if (limitWarning) limitWarning.hidden = false;
                 return;
@@ -181,25 +214,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function recalculateTotals() {
-        bookingState.totalPrice = bookingState.selectedServices.reduce((acc, cur) => acc + cur.price, 0);
-        bookingState.totalDuration = bookingState.selectedServices.reduce((acc, cur) => acc + cur.duration, 0);
+        bookingState.totalPrice = bookingState.selectedServices.reduce((acc, cur) => acc + Number(cur.price), 0);
+        bookingState.totalDuration = bookingState.selectedServices.reduce((acc, cur) => acc + Number(cur.duration), 0);
     }
 
     function updateServiceBadges() {
         if (serviceCountBadge) {
             serviceCountBadge.textContent = `${bookingState.selectedServices.length} / ${bookingState.maxServices} máx.`;
         }
-    }
-
-    function setupCategoryTabs() {
-        const tabs = document.querySelectorAll('.hg-tab-btn');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('is-active'));
-                tab.classList.add('is-active');
-                renderServices(tab.dataset.category);
-            });
-        });
     }
 
     // ==========================================
@@ -209,7 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!prosContainer) return;
         prosContainer.innerHTML = '';
 
-        PROFESSIONALS.forEach(pro => {
+        if (bookingState.professionals.length === 0) {
+            prosContainer.innerHTML = '<p class="hg-empty-msg">Aún no hay especialistas disponibles.</p>';
+            return;
+        }
+
+        bookingState.professionals.forEach(pro => {
             const isSelected = bookingState.selectedProfessional?.id === pro.id;
             const card = document.createElement('div');
             card.className = `hg-pro-card ${isSelected ? 'is-selected' : ''}`;
@@ -231,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // 8. RENDERIZADO DEL PASO 3 (FECHA Y TURNOS 8-17)
+    // 8. RENDERIZADO DEL PASO 3 (FECHA Y TURNOS)
     // ==========================================
     function renderDayScroller() {
         if (!dayScroller) return;
@@ -242,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (let i = 0; i < 7; i++) {
             const d = new Date();
-            d.setDate(today.getDate() + i);
+            d.setDate(today.getDate() + bookingState.dayOffset + i);
 
             const dateStr = d.toISOString().split('T')[0];
             const isSelected = bookingState.selectedDate === dateStr;
@@ -257,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             btn.addEventListener('click', () => {
                 bookingState.selectedDate = dateStr;
-                bookingState.selectedTime = null; // Reiniciar hora al cambiar día
+                bookingState.selectedTime = null;
                 renderDayScroller();
                 fetchOccupiedSlotsAndRenderGrid(dateStr);
                 updateSummary();
@@ -266,43 +293,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
             dayScroller.appendChild(btn);
 
-            // Seleccionar por defecto el primer día si no hay ninguno
             if (i === 0 && !bookingState.selectedDate) {
                 btn.click();
             }
         }
+
+        updateDayNavButtons();
     }
 
-    /**
-     * Consulta al servidor Java los turnos ocupados para una fecha.
-     * En producción:
-     * fetch(`/citas/api/disponibilidad?fecha=${dateStr}&profesionalId=${bookingState.selectedProfessional?.id}`)
-     */
+    function setupDayNavButtons() {
+        const prevBtn = document.getElementById('btn-prev-week');
+        const nextBtn = document.getElementById('btn-next-week');
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                bookingState.dayOffset = Math.max(0, bookingState.dayOffset - 7);
+                renderDayScroller();
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                bookingState.dayOffset = Math.min(MAX_DAY_OFFSET, bookingState.dayOffset + 7);
+                renderDayScroller();
+            });
+        }
+    }
+
+    function updateDayNavButtons() {
+        const prevBtn = document.getElementById('btn-prev-week');
+        const nextBtn = document.getElementById('btn-next-week');
+        if (prevBtn) prevBtn.disabled = bookingState.dayOffset <= 0;
+        if (nextBtn) nextBtn.disabled = bookingState.dayOffset >= MAX_DAY_OFFSET;
+    }
+
     async function fetchOccupiedSlotsAndRenderGrid(dateStr) {
         if (!timeSlotsGrid) return;
         timeSlotsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:15px; color:#888;">Verificando horarios en el servidor...</div>';
 
+        let busySlots = [];
         try {
-            // INTENTO REAL AL BACKEND JAVA (O FALLBACK LOCAL)
-            let busySlots = [];
-            try {
-                const response = await fetch(`/citas/api/disponibilidad?fecha=${dateStr}`, {
-                    headers: { 'Accept': 'application/json' }
-                });
-                if (response.ok) {
-                    busySlots = await response.json();
-                } else {
-                    busySlots = MOCK_OCCUPIED_SLOTS[dateStr] || ['10:00', '15:00'];
-                }
-            } catch (err) {
-                // Fallback elegante mientras no corre el servidor
-                busySlots = MOCK_OCCUPIED_SLOTS[dateStr] || ['09:00', '13:30'];
+            const response = await fetch(`/citas/api/disponibilidad?fecha=${dateStr}`, {
+                headers: { 'Accept': 'application/json' }
+            });
+            if (response.ok) {
+                busySlots = await response.json();
             }
-
-            renderTimeSlotsGrid(busySlots);
-        } catch (error) {
-            console.error('Error cargando turnos:', error);
+        } catch (err) {
+            console.error('Error consultando disponibilidad:', err);
         }
+
+        renderTimeSlotsGrid(busySlots);
     }
 
     function renderTimeSlotsGrid(busySlots = []) {
@@ -447,7 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Click directo en los números del Stepper
         stepIndicators.forEach(ind => {
             ind.addEventListener('click', () => {
                 const target = parseInt(ind.dataset.stepIndicator, 10);
@@ -475,13 +514,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function goToStep(stepNumber) {
         bookingState.currentStep = stepNumber;
 
-        // Ocultar todos los paneles
         Object.values(stepPanels).forEach(p => p && p.classList.remove('is-active'));
         if (stepPanels[stepNumber]) {
             stepPanels[stepNumber].classList.add('is-active');
         }
 
-        // Actualizar Stepper Header
         stepIndicators.forEach(ind => {
             const num = parseInt(ind.dataset.stepIndicator, 10);
             ind.classList.toggle('is-active', num === stepNumber);
@@ -492,7 +529,6 @@ document.addEventListener('DOMContentLoaded', () => {
             stepEyebrow.textContent = `Paso ${stepNumber} de 4`;
         }
 
-        // Botón atrás visible solo desde el paso 2
         if (btnBack) {
             btnBack.hidden = stepNumber === 1;
         }
@@ -512,11 +548,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btnNext.disabled = true;
         btnNext.textContent = 'Bloqueando cita en Base de Datos...';
 
-        const authUserId = document.getElementById('auth-user-id')?.value || 1042;
+        const authUserId = document.getElementById('auth-user-id')?.value || null;
         const notesInput = document.getElementById('booking-notes')?.value || '';
 
         const payload = {
-            usuarioId: parseInt(authUserId, 10),
+            usuarioId: authUserId ? parseInt(authUserId, 10) : null,
             profesionalId: bookingState.selectedProfessional.id,
             fecha: bookingState.selectedDate,
             horaInicio: bookingState.selectedTime,
@@ -527,7 +563,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            // LLAMADO POST AL CONTROLADOR JAVA
             const response = await fetch('/citas/api/reservar', {
                 method: 'POST',
                 headers: {
@@ -537,19 +572,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(payload)
             });
 
-            if (response.ok) {
-                const resData = await response.json();
-                showSuccessScreen(resData.codigoCita || 'HG-2026-7842');
-            } else {
-                // Si el backend responde error (ej. cita ya ocupada)
-                const errData = await response.json().catch(() => ({}));
-                alert(errData.mensaje || 'La cita fue reservada con éxito.');
-                showSuccessScreen('HG-2026-' + Math.floor(1000 + Math.random() * 9000));
-            }
+            const resData = await response.json().catch(() => ({}));
+            showSuccessScreen(resData.codigoCita || 'HG-2026-0000');
         } catch (error) {
-            // En modo estático/prototipo, simular confirmación exitosa
-            console.warn('Backend no disponible, simulando confirmación exitosa:', error);
-            showSuccessScreen('HG-2026-' + Math.floor(1000 + Math.random() * 9000));
+            console.error('Error al enviar la reserva:', error);
+            btnNext.disabled = false;
+            btnNext.textContent = '🔒 Confirmar y Bloquear Cita';
+            alert('No se pudo procesar la reserva. Intenta de nuevo.');
         }
     }
 

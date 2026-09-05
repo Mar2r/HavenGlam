@@ -50,15 +50,32 @@
             <a th:href="@{/nosotros}" href="/nosotros" class="nav-link">Sobre Nosotros</a>
         </nav>
 
-        <!-- ACCIONES -->
+        <!-- ACCIONES (Desktop) -->
         <div class="nav-actions">
-            <a th:href="@{/login}" href="../Auth/login.html" class="btn-login" id="navLoginBtn">
+            <a th:if="${nombreUsuarioSesion == null}"
+               th:href="@{/login}" href="../Auth/login.html" class="btn-login" id="navLoginBtn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                      stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
                 <span>Iniciar Sesión</span>
+            </a>
+
+            <div th:if="${nombreUsuarioSesion != null}" class="nav-user-chip">
+                <span class="nav-user-avatar" th:text="${#strings.substring(nombreUsuarioSesion,0,1)}">U</span>
+                <span th:text="${nombreUsuarioSesion}">Cliente</span>
+            </div>
+
+            <a th:if="${nombreUsuarioSesion != null}"
+               th:href="@{/logout}" href="/logout" class="btn-login btn-logout" id="navLogoutBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Cerrar Sesión</span>
             </a>
 
             <button class="nav-toggle-btn" id="navToggleBtn" aria-label="Abrir menú" aria-expanded="false">
@@ -70,7 +87,6 @@
                 </svg>
             </button>
         </div>
-
     </div>
 
     <!-- PANEL MÓVIL -->
@@ -78,17 +94,32 @@
         <a th:href="@{/}" href="/" class="nav-link">Inicio</a>
         <a th:href="@{/servicios}" href="/servicios" class="nav-link">Servicios</a>
         <a th:href="@{/productos}" href="/productos" class="nav-link">Productos</a>
-        <a th:href="@{/citas}" href="/citas" class="nav-link">Citas</a>
+        <a th:href="@{/citas}" href="/citas/crear" class="nav-link">Citas</a>
         <a th:href="@{/nosotros}" href="/nosotros" class="nav-link">Sobre Nosotros</a>
 
         <div class="mobile-actions">
-            <a th:href="@{/login}" href="../Auth/login" class="btn-login">
+            <a th:if="${nombreUsuarioSesion == null}" th:href="@{/login}" href="../Auth/login" class="btn-login">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
                 </svg>
                 <span>Iniciar Sesión</span>
             </a>
+
+            <div th:if="${nombreUsuarioSesion != null}" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                <div class="nav-user-chip nav-user-chip--mobile">
+                    <span class="nav-user-avatar" th:text="${#strings.substring(nombreUsuarioSesion,0,1)}">U</span>
+                    <span th:text="${nombreUsuarioSesion}">Cliente</span>
+                </div>
+                <a th:href="@{/logout}" href="/logout" class="btn-login" style="display: flex; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
         </div>
     </div>
 </header>

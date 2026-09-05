@@ -67,14 +67,8 @@
                         </div>
                     </div>
 
-                    <!-- Filtros por categoría -->
-                    <div class="hg-tabs-list" role="tablist">
-                        <button type="button" class="hg-tab-btn is-active" data-category="all">Todos</button>
-                        <button type="button" class="hg-tab-btn" data-category="cabello">Cabello</button>
-                        <button type="button" class="hg-tab-btn" data-category="unas">Uñas</button>
-                        <button type="button" class="hg-tab-btn" data-category="facial">Facial</button>
-                        <button type="button" class="hg-tab-btn" data-category="masaje">Masajes</button>
-                    </div>
+                    <!-- Filtros por categoría (ahora dinámicos, generados por citas.js) -->
+                    <div class="hg-tabs-list" role="tablist" id="category-tabs-container"></div>
 
                     <!-- Lista de servicios generada dinámicamente -->
                     <div class="hg-service-list" id="services-list-container"></div>
@@ -109,9 +103,13 @@
                         </div>
                     </div>
 
-                    <!-- Carrusel de días -->
+                    <!-- Carrusel de días con navegación -->
                     <label class="hg-label">Selecciona el Día:</label>
-                    <div class="hg-day-scroller" id="day-scroller"></div>
+                    <div class="hg-day-nav-wrapper">
+                        <button type="button" class="hg-day-nav-btn" id="btn-prev-week" aria-label="Semana anterior">‹</button>
+                        <div class="hg-day-scroller" id="day-scroller"></div>
+                        <button type="button" class="hg-day-nav-btn" id="btn-next-week" aria-label="Semana siguiente">›</button>
+                    </div>
 
                     <!-- Grilla de turnos de 30 minutos -->
                     <label class="hg-label">Horarios disponibles cada 30 min:</label>

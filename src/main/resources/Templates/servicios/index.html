@@ -14,11 +14,15 @@
         </div>
         <table class="admin-table">
             <thead>
-            <tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr>
+            <tr><th>ID</th><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr>
             </thead>
             <tbody>
             <tr th:each="servicio : ${servicios}">
                 <td th:text="${servicio.idServicio}"></td>
+                <td>
+                    <img th:if="${servicio.imagenUrl != null}" th:src="${servicio.imagenUrl}"
+                         style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;" />
+                </td>
                 <td th:text="${servicio.nombreServicio}"></td>
                 <td th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : ''}"></td>
                 <td th:text="${'$' + servicio.precio}"></td>

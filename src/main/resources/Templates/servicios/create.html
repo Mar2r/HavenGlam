@@ -14,7 +14,8 @@
             <h2>Nuevo servicio</h2>
         </div>
 
-        <form th:action="@{/servicios/crear}" th:object="${servicio}" method="post">
+        <form th:action="@{/servicios/crear}" th:object="${servicio}" method="post"
+        enctype="multipart/form-data">
 
             <div class="admin-form-group">
                 <label for="nombreServicio">Nombre del servicio</label>
@@ -46,7 +47,7 @@
 
             <div class="admin-form-group">
                 <label for="categoria">Categoría</label>
-                <select id="categoria" th:field="*{categoria}">
+                <select id="categoria" th:field="*{categoria.idCategoria}">
                     <option value="">Selecciona una categoría</option>
                     <option th:each="c : ${categorias}"
                             th:value="${c.idCategoria}"
@@ -58,7 +59,7 @@
 
             <div class="admin-form-group">
                 <label for="estado">Estado</label>
-                <select id="estado" th:field="*{estado}">
+                <select id="estado" th:field="*{estado.idEstado}">
                     <option value="">Selecciona un estado</option>
                     <option th:each="e : ${estados}"
                             th:value="${e.idEstado}"
@@ -69,10 +70,8 @@
             </div>
 
             <div class="admin-form-group">
-                <label for="imagenUrl">URL de imagen</label>
-                <input type="text" id="imagenUrl" th:field="*{imagenUrl}" />
-                <div class="admin-error" th:if="${#fields.hasErrors('imagenUrl')}"
-                     th:errors="*{imagenUrl}"></div>
+                <label for="file">Imagen del servicio</label>
+                <input type="file" id="file" name="file" accept="image/*" />
             </div>
 
             <div class="admin-form-actions">

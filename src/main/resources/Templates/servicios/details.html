@@ -17,6 +17,12 @@
             <dt>Duración</dt><dd th:text="${#temporals.format(servicio.duracionMinutos, 'HH:mm')}"></dd>
             <dt>Categoría</dt><dd th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : ''}"></dd>
             <dt>Estado</dt><dd th:text="${servicio.estado != null ? servicio.estado.nombreEstado : ''}"></dd>
+            <dt>Imagen</dt>
+            <dd>
+                <img th:if="${servicio.imagenUrl != null}" th:src="${servicio.imagenUrl}"
+                     style="max-width: 220px; border-radius: 10px;" />
+                <span th:if="${servicio.imagenUrl == null}">Sin imagen</span>
+            </dd>
         </dl>
         <div class="admin-form-actions">
             <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-secondary">Editar</a>

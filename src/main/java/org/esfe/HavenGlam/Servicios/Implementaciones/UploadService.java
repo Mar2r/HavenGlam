@@ -11,12 +11,13 @@ import java.io.IOException;
 import java.util.Map;
 
 @Service
-public class UploadService {
+public class UploadService implements IUploadService {
 
     @Autowired
     private Cloudinary cloudinary;
 
-    private String uploadFile(MultipartFile file) throws IOException {
+    @Override
+    public String uploadFile(MultipartFile file) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
         return uploadResult.get("secure_url").toString();
     }

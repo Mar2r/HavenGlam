@@ -1,5 +1,7 @@
 package org.esfe.HavenGlam.Modelos;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalTime;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +35,7 @@ public class Servicio {
     private BigDecimal precio;
 
     @NotNull(message = "La duración es obligatoria")
+    @DateTimeFormat(pattern = "HH:mm")
     @Column(name = "DuracionMinutos", nullable = false)
     private LocalTime duracionMinutos;
 

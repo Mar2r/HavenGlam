@@ -26,6 +26,16 @@ body.admin-app{
 }
 
 body.admin-app a{color:inherit; text-decoration:none;}
+body.admin-app a.btn-primary,
+body.admin-app button.btn-primary,
+body.admin-app .btn-primary {
+    color: #FFFFFF !important;
+}
+body.admin-app a.btn-danger,
+body.admin-app button.btn-danger,
+body.admin-app .btn-danger {
+    color: #FFFFFF !important;
+}
 
 .app{
     display:grid;

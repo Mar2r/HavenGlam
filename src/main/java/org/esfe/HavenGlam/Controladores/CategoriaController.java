@@ -20,14 +20,24 @@ public class CategoriaController {
     @Autowired
     private IEstadoService estadoService;
 
+    @ModelAttribute
+    public void agregarAtributosComunes(Model model) {
+        model.addAttribute("activePage", "categoria");
+        model.addAttribute("nombreAdmin", "Administrador");
+    }
+
     @GetMapping
     public String index(Model model) {
+        model.addAttribute("pageTitle", "Categorías");
+        model.addAttribute("pageSubtitle", "Clasificación y gestión de categorías de servicios y productos");
         model.addAttribute("categorias", categoriaService.listar());
         return "categoria/index";
     }
 
     @GetMapping("/create")
     public String create(Model model) {
+        model.addAttribute("pageTitle", "Nueva Categoría");
+        model.addAttribute("pageSubtitle", "Registrar una nueva categoría en el sistema");
         model.addAttribute("categoria", new Categoria());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "categoria/create";
@@ -37,6 +47,8 @@ public class CategoriaController {
     public String create(@Valid @ModelAttribute("categoria") Categoria categoria,
                          BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Nueva Categoría");
+            model.addAttribute("pageSubtitle", "Registrar una nueva categoría en el sistema");
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "categoria/create";
         }
@@ -48,6 +60,8 @@ public class CategoriaController {
     public String edit(@PathVariable Integer id, Model model) {
         Categoria categoria = categoriaService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con ID: " + id));
+        model.addAttribute("pageTitle", "Editar Categoría");
+        model.addAttribute("pageSubtitle", "Modificar información de la categoría seleccionada");
         model.addAttribute("categoria", categoria);
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "categoria/edit";
@@ -58,6 +72,8 @@ public class CategoriaController {
                        @Valid @ModelAttribute("categoria") Categoria categoria,
                        BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Editar Categoría");
+            model.addAttribute("pageSubtitle", "Modificar información de la categoría seleccionada");
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "categoria/edit";
         }
@@ -70,6 +86,8 @@ public class CategoriaController {
     public String details(@PathVariable Integer id, Model model) {
         Categoria categoria = categoriaService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con ID: " + id));
+        model.addAttribute("pageTitle", "Detalle de Categoría");
+        model.addAttribute("pageSubtitle", "Información detallada de la categoría");
         model.addAttribute("categoria", categoria);
         return "categoria/details";
     }
@@ -78,6 +96,8 @@ public class CategoriaController {
     public String delete(@PathVariable Integer id, Model model) {
         Categoria categoria = categoriaService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada con ID: " + id));
+        model.addAttribute("pageTitle", "Eliminar Categoría");
+        model.addAttribute("pageSubtitle", "Confirmación para dar de baja la categoría");
         model.addAttribute("categoria", categoria);
         return "categoria/delete";
     }

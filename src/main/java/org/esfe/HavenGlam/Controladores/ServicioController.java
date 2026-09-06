@@ -31,14 +31,24 @@ public class ServicioController {
     @Autowired
     private IUploadService uploadService;
 
+    @ModelAttribute
+    public void agregarAtributosComunes(Model model) {
+        model.addAttribute("activePage", "servicios");
+        model.addAttribute("nombreAdmin", "Administrador");
+    }
+
     @GetMapping
     public String index(Model model) {
+        model.addAttribute("pageTitle", "Servicios");
+        model.addAttribute("pageSubtitle", "Catálogo y administración de servicios de belleza");
         model.addAttribute("servicios", servicioService.listar());
         return "servicios/index";
     }
 
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
+        model.addAttribute("pageTitle", "Nuevo Servicio");
+        model.addAttribute("pageSubtitle", "Registrar un nuevo tratamiento en el catálogo");
         model.addAttribute("servicio", new Servicio());
         model.addAttribute("categorias", categoriaService.listarActivas());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
@@ -56,6 +66,8 @@ public class ServicioController {
         }
 
         if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Nuevo Servicio");
+            model.addAttribute("pageSubtitle", "Registrar un nuevo tratamiento en el catálogo");
             model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "servicios/create";
@@ -72,6 +84,8 @@ public class ServicioController {
     public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
         Servicio servicio = servicioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con ID: " + id));
+        model.addAttribute("pageTitle", "Editar Servicio");
+        model.addAttribute("pageSubtitle", "Modificar información del servicio seleccionado");
         model.addAttribute("servicio", servicio);
         model.addAttribute("categorias", categoriaService.listarActivas());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
@@ -92,6 +106,8 @@ public class ServicioController {
         }
 
         if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Editar Servicio");
+            model.addAttribute("pageSubtitle", "Modificar información del servicio seleccionado");
             model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "servicios/edit";
@@ -114,6 +130,8 @@ public class ServicioController {
     public String detalles(@PathVariable Integer id, Model model) {
         Servicio servicio = servicioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con ID: " + id));
+        model.addAttribute("pageTitle", "Detalle del Servicio");
+        model.addAttribute("pageSubtitle", "Información detallada del servicio");
         model.addAttribute("servicio", servicio);
         return "servicios/details";
     }
@@ -122,6 +140,8 @@ public class ServicioController {
     public String mostrarConfirmacionEliminar(@PathVariable Integer id, Model model) {
         Servicio servicio = servicioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con ID: " + id));
+        model.addAttribute("pageTitle", "Eliminar Servicio");
+        model.addAttribute("pageSubtitle", "Confirmación para dar de baja un servicio");
         model.addAttribute("servicio", servicio);
         return "servicios/delete";
     }

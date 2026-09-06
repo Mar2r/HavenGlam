@@ -1,26 +1,38 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutAdmin}">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Eliminar producto · Haven Glam Admin</title>
-    <link rel="stylesheet" th:href="@{/css/producto.css}">
+    <title>Eliminar Producto · Haven Glam Admin</title>
+    <th:block layout:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/Producto.css}">
+    </th:block>
 </head>
+
 <body>
-<div class="container producto-page">
-    <div class="admin-card admin-card--confirm">
-        <div class="admin-card-header"><h2>Eliminar producto</h2></div>
-        <p class="admin-confirm-text">
-            ¿Seguro que deseas eliminar el producto "<strong th:text="${producto.nombreProducto}"></strong>"?
-            Esta acción no se puede deshacer.
-        </p>
-        <form th:action="@{/productos/eliminar/{id}(id=${producto.idProducto})}" method="post">
-            <div class="admin-form-actions">
-                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
-                <a th:href="@{/productos}" class="btn btn-secondary">Cancelar</a>
+<th:block layout:fragment="content">
+    <div class="container producto-page">
+        <div class="admin-card admin-card--confirm">
+            <div class="admin-card-header">
+                <h2>Confirmar Eliminación</h2>
             </div>
-        </form>
+            <p class="admin-confirm-text">
+                ¿Seguro que deseas eliminar permanentemente el producto "<strong th:text="${producto.nombreProducto}"></strong>"?
+                Esta acción dará de baja el producto y su stock del inventario.
+            </p>
+            <form th:action="@{/productos/eliminar/{id}(id=${producto.idProducto})}" method="post">
+                <div class="admin-form-actions">
+                    <button type="submit" class="btn btn-danger">Sí, eliminar producto</button>
+                    <a th:href="@{/productos}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-<script th:src="@{/js/producto.js}"></script>
+</th:block>
+
+<th:block layout:fragment="extraScripts">
+    <script th:src="@{/js/producto.js}"></script>
+</th:block>
 </body>
 </html>

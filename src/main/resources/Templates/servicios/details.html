@@ -1,35 +1,63 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutAdmin}">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Detalle del servicio · Haven Glam Admin</title>
-    <link rel="stylesheet" th:href="@{/css/servicio.css}">
+    <title>Detalle del Servicio · Haven Glam Admin</title>
+    <th:block layout:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/Servicio.css}">
+    </th:block>
 </head>
+
 <body>
-<div class="container servicio-page">
-    <div class="admin-card admin-card--details">
-        <div class="admin-card-header"><h2 th:text="${servicio.nombreServicio}"></h2></div>
-        <dl class="admin-details-list">
-            <dt>ID</dt><dd th:text="${servicio.idServicio}"></dd>
-            <dt>Nombre</dt><dd th:text="${servicio.nombreServicio}"></dd>
-            <dt>Descripción</dt><dd th:text="${servicio.descripcion != null ? servicio.descripcion : 'Sin descripción'}"></dd>
-            <dt>Precio</dt><dd th:text="${'$' + servicio.precio}"></dd>
-            <dt>Duración</dt><dd th:text="${#temporals.format(servicio.duracionMinutos, 'HH:mm')}"></dd>
-            <dt>Categoría</dt><dd th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : ''}"></dd>
-            <dt>Estado</dt><dd th:text="${servicio.estado != null ? servicio.estado.nombreEstado : ''}"></dd>
-            <dt>Imagen</dt>
-            <dd>
-                <img th:if="${servicio.imagenUrl != null}" th:src="${servicio.imagenUrl}"
-                     style="max-width: 220px; border-radius: 10px;" />
-                <span th:if="${servicio.imagenUrl == null}">Sin imagen</span>
-            </dd>
-        </dl>
-        <div class="admin-form-actions">
-            <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-secondary">Editar</a>
-            <a th:href="@{/servicios}" class="btn btn-primary">Volver al listado</a>
+<th:block layout:fragment="content">
+    <div class="container servicio-page">
+        <div class="admin-card admin-card--details">
+            <div class="admin-card-header">
+                <h2 th:text="${servicio.nombreServicio}"></h2>
+            </div>
+            <dl class="admin-details-list">
+                <dt>ID</dt>
+                <dd th:text="${servicio.idServicio}"></dd>
+
+                <dt>Nombre</dt>
+                <dd th:text="${servicio.nombreServicio}"></dd>
+
+                <dt>Descripción</dt>
+                <dd th:text="${servicio.descripcion != null && !servicio.descripcion.isBlank() ? servicio.descripcion : 'Sin descripción'}"></dd>
+
+                <dt>Precio</dt>
+                <dd th:text="${'$' + servicio.precio}"></dd>
+
+                <dt>Duración estimada</dt>
+                <dd th:text="${#temporals.format(servicio.duracionMinutos, 'HH:mm') + ' hrs'}"></dd>
+
+                <dt>Categoría</dt>
+                <dd th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : 'Sin categoría'}"></dd>
+
+                <dt>Estado</dt>
+                <dd>
+                    <span th:text="${servicio.estado != null ? servicio.estado.nombreEstado : 'Sin estado'}"></span>
+                </dd>
+
+                <dt>Imagen</dt>
+                <dd>
+                    <img th:if="${servicio.imagenUrl != null}" th:src="${servicio.imagenUrl}"
+                         style="max-width: 220px; border-radius: 10px; border: 1px solid var(--creme);" alt="Servicio" />
+                    <span th:if="${servicio.imagenUrl == null}" style="color:var(--muted);">Sin imagen registrada</span>
+                </dd>
+            </dl>
+            <div class="admin-form-actions">
+                <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-secondary">Editar servicio</a>
+                <a th:href="@{/servicios}" class="btn btn-primary">Volver al catálogo</a>
+            </div>
         </div>
     </div>
-</div>
-<script th:src="@{/js/servicio.js}"></script>
+</th:block>
+
+<th:block layout:fragment="extraScripts">
+    <script th:src="@{/js/servicio.js}"></script>
+</th:block>
 </body>
 </html>

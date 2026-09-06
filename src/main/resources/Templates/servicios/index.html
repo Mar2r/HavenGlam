@@ -1,44 +1,55 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutAdmin}">
+
 <head>
-    <meta charset="UTF-8" />
     <title>Servicios · Haven Glam Admin</title>
-    <link rel="stylesheet" th:href="@{/css/servicio.css}">
+    <th:block layout:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/Servicio.css}">
+    </th:block>
 </head>
+
 <body>
-<div class="container servicio-page">
-    <div class="admin-card">
-        <div class="admin-card-header">
-            <h2>Servicios</h2>
-            <a th:href="@{/servicios/crear}" class="btn btn-primary">Nuevo servicio</a>
+<th:block layout:fragment="content">
+    <div class="container servicio-page">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h2>Servicios Registrados</h2>
+                <a th:href="@{/servicios/crear}" class="btn btn-primary">+ Nuevo servicio</a>
+            </div>
+            <table class="admin-table">
+                <thead>
+                <tr><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="servicio : ${servicios}">
+                    <td>
+                        <img th:if="${servicio.imagenUrl != null}" th:src="${servicio.imagenUrl}"
+                             style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;" alt="Servicio" />
+                        <span th:if="${servicio.imagenUrl == null}" style="color:var(--muted); font-size: 0.8rem;">Sin foto</span>
+                    </td>
+                    <td th:text="${servicio.nombreServicio}"></td>
+                    <td th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : ''}"></td>
+                    <td th:text="${'$' + servicio.precio}"></td>
+                    <td th:text="${servicio.estado != null ? servicio.estado.nombreEstado : ''}"></td>
+                    <td class="admin-table-actions">
+                        <a th:href="@{/servicios/detalles/{id}(id=${servicio.idServicio})}" class="btn btn-info">Ver</a>
+                        <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-secondary">Editar</a>
+                        <a th:href="@{/servicios/eliminar/{id}(id=${servicio.idServicio})}" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(servicios)}">
+                    <td colspan="6" class="admin-table-empty">No hay servicios registrados.</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-        <table class="admin-table">
-            <thead>
-            <tr><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Estado</th><th>Acciones</th></tr>
-            </thead>
-            <tbody>
-            <tr th:each="servicio : ${servicios}">
-                <td>
-                    <img th:if="${servicio.imagenUrl != null}" th:src="${servicio.imagenUrl}"
-                         style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;" />
-                </td>
-                <td th:text="${servicio.nombreServicio}"></td>
-                <td th:text="${servicio.categoria != null ? servicio.categoria.nombreCategoria : ''}"></td>
-                <td th:text="${'$' + servicio.precio}"></td>
-                <td th:text="${servicio.estado != null ? servicio.estado.nombreEstado : ''}"></td>
-                <td class="admin-table-actions">
-                    <a th:href="@{/servicios/detalles/{id}(id=${servicio.idServicio})}" class="btn btn-info">Ver</a>
-                    <a th:href="@{/servicios/editar/{id}(id=${servicio.idServicio})}" class="btn btn-secondary">Editar</a>
-                    <a th:href="@{/servicios/eliminar/{id}(id=${servicio.idServicio})}" class="btn btn-danger">Eliminar</a>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(servicios)}">
-                <td colspan="6" class="admin-table-empty">No hay servicios registrados.</td>
-            </tr>
-            </tbody>
-        </table>
     </div>
-</div>
-<script th:src="@{/js/servicio.js}"></script>
+</th:block>
+
+<th:block layout:fragment="extraScripts">
+    <script th:src="@{/js/servicio.js}"></script>
+</th:block>
 </body>
 </html>

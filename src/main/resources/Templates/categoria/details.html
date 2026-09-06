@@ -1,42 +1,53 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutAdmin}">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Detalle de categoría · Haven Glam Admin</title>
-    <link rel="stylesheet" th:href="@{/css/categoria.css}">
+    <title>Detalle de Categoría · Haven Glam Admin</title>
+    <th:block layout:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/categoria.css}">
+    </th:block>
 </head>
+
 <body>
+<th:block layout:fragment="content">
+    <div class="container categoria-page">
 
-<div class="container categoria-page">
+        <div class="admin-card admin-card--form">
+            <div class="admin-card-header">
+                <h2 th:text="${categoria.nombreCategoria}">Cabello</h2>
+            </div>
 
-    <div class="admin-card admin-card--form">
-        <div class="admin-card-header">
-            <h2 th:text="${categoria.nombreCategoria}">Cabello</h2>
+            <dl class="admin-detail-grid">
+                <div class="admin-detail-item">
+                    <dt>ID</dt>
+                    <dd th:text="${categoria.idCategoria}">1</dd>
+                </div>
+                <div class="admin-detail-item">
+                    <dt>Nombre de categoría</dt>
+                    <dd th:text="${categoria.nombreCategoria}">Cabello</dd>
+                </div>
+                <div class="admin-detail-item">
+                    <dt>Estado actual</dt>
+                    <dd>
+                        <span class="admin-badge admin-badge--activo"
+                              th:text="${categoria.estado != null ? categoria.estado.nombreEstado : 'Sin estado'}">Activo</span>
+                    </dd>
+                </div>
+            </dl>
+
+            <div class="admin-form-actions">
+                <a th:href="@{'/categorias/edit/' + ${categoria.idCategoria}}" class="btn btn-primary">Editar categoría</a>
+                <a th:href="@{/categorias}" class="btn btn-secondary">Volver al listado</a>
+            </div>
         </div>
 
-        <dl class="admin-detail-grid">
-            <div class="admin-detail-item">
-                <dt>ID</dt>
-                <dd th:text="${categoria.idCategoria}">1</dd>
-            </div>
-            <div class="admin-detail-item">
-                <dt>Nombre</dt>
-                <dd th:text="${categoria.nombreCategoria}">Cabello</dd>
-            </div>
-            <div class="admin-detail-item">
-                <dt>Estado</dt>
-                <dd th:text="${categoria.estado.nombreEstado}">Activo</dd>
-            </div>
-        </dl>
-
-        <div class="admin-form-actions">
-            <a th:href="@{'/categorias/edit/' + ${categoria.idCategoria}}" class="btn btn-primary">Editar</a>
-            <a th:href="@{/categorias}" class="btn btn-secondary">Volver</a>
-        </div>
     </div>
+</th:block>
 
-</div>
-
-<script th:src="@{/js/categoria.js}"></script>
+<th:block layout:fragment="extraScripts">
+    <script th:src="@{/js/categoria.js}"></script>
+</th:block>
 </body>
 </html>

@@ -31,14 +31,24 @@ public class ProductoController {
     @Autowired
     private IUploadService uploadService;
 
+    @ModelAttribute
+    public void agregarAtributosComunes(Model model) {
+        model.addAttribute("activePage", "productos");
+        model.addAttribute("nombreAdmin", "Administrador");
+    }
+
     @GetMapping
     public String index(Model model) {
+        model.addAttribute("pageTitle", "Productos");
+        model.addAttribute("pageSubtitle", "Inventario y gestión de productos del salón");
         model.addAttribute("productos", productoService.listar());
         return "productos/index";
     }
 
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
+        model.addAttribute("pageTitle", "Nuevo Producto");
+        model.addAttribute("pageSubtitle", "Registrar un nuevo producto en el catálogo");
         model.addAttribute("producto", new Producto());
         model.addAttribute("categorias", categoriaService.listarActivas());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
@@ -56,6 +66,8 @@ public class ProductoController {
         }
 
         if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Nuevo Producto");
+            model.addAttribute("pageSubtitle", "Registrar un nuevo producto en el catálogo");
             model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "productos/create";
@@ -72,6 +84,8 @@ public class ProductoController {
     public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
         Producto producto = productoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+        model.addAttribute("pageTitle", "Editar Producto");
+        model.addAttribute("pageSubtitle", "Modificar datos y stock del producto seleccionado");
         model.addAttribute("producto", producto);
         model.addAttribute("categorias", categoriaService.listarActivas());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
@@ -92,6 +106,8 @@ public class ProductoController {
         }
 
         if (result.hasErrors()) {
+            model.addAttribute("pageTitle", "Editar Producto");
+            model.addAttribute("pageSubtitle", "Modificar datos y stock del producto seleccionado");
             model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "productos/edit";
@@ -114,6 +130,8 @@ public class ProductoController {
     public String detalles(@PathVariable Integer id, Model model) {
         Producto producto = productoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+        model.addAttribute("pageTitle", "Detalle del Producto");
+        model.addAttribute("pageSubtitle", "Información detallada del producto en inventario");
         model.addAttribute("producto", producto);
         return "productos/details";
     }
@@ -122,6 +140,8 @@ public class ProductoController {
     public String mostrarConfirmacionEliminar(@PathVariable Integer id, Model model) {
         Producto producto = productoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+        model.addAttribute("pageTitle", "Eliminar Producto");
+        model.addAttribute("pageSubtitle", "Confirmación para dar de baja un producto");
         model.addAttribute("producto", producto);
         return "productos/delete";
     }

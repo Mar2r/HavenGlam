@@ -20,6 +20,9 @@ body{
 
 .container{ max-width:960px; margin:0 auto; padding:40px 24px; }
 
+body.admin-app .container { max-width: 100%; margin: 0; padding: 0; }
+body.admin-app .empleado-page { padding: 0; }
+
 .admin-card{
     background:var(--white);
     border:1px solid var(--border);
@@ -97,8 +100,18 @@ body{
     align-items:center;
     justify-content:center;
 }
-.btn-primary{ background:var(--burgundy); color:var(--creme); }
-.btn-primary:hover{ background:#3a0a0f; }
+.btn-primary,
+body.admin-app a.btn-primary,
+body.admin-app button.btn-primary { 
+    background:var(--burgundy); 
+    color:#FFFFFF !important; 
+}
+.btn-primary:hover,
+body.admin-app a.btn-primary:hover,
+body.admin-app button.btn-primary:hover { 
+    background:#3a0a0f; 
+    color:#FFFFFF !important; 
+}
 .btn-secondary{ background:transparent; color:var(--muted); border:1px solid var(--border); }
 .btn-secondary:hover{ color:var(--ink); border-color:var(--ink); }
 

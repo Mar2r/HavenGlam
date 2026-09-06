@@ -31,6 +31,9 @@ body {
 .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
 .producto-page { padding: 48px 24px; }
 
+body.admin-app .container { max-width: 100%; margin: 0; padding: 0; }
+body.admin-app .producto-page { padding: 0; }
+
 .admin-card {
     background: var(--white);
     border-radius: var(--radius-lg);
@@ -104,11 +107,21 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
-.btn-primary { background: var(--burgundy); color: var(--white); }
-.btn-primary:hover { background: var(--burgundy-dark); }
+.btn-primary,
+body.admin-app a.btn-primary,
+body.admin-app button.btn-primary { 
+    background: var(--burgundy); 
+    color: #FFFFFF !important; 
+}
+.btn-primary:hover { background: var(--burgundy-dark); color: #FFFFFF !important; }
 .btn-secondary { background: var(--creme); color: var(--burgundy); border-color: rgba(var(--burgundy-rgb), 0.15); }
 .btn-secondary:hover { background: var(--white); border-color: var(--burgundy); }
-.btn-danger { background: #8C2F2F; color: var(--white); }
+.btn-danger,
+body.admin-app a.btn-danger,
+body.admin-app button.btn-danger { 
+    background: #8C2F2F; 
+    color: #FFFFFF !important; 
+}
 .btn-danger:hover { background: #6B2323; }
 .btn-info { background: var(--sand); color: var(--burgundy); }
 .btn-info:hover { background: var(--creme); }
@@ -169,3 +182,61 @@ body {
 }
 
 .admin-form-actions { display: flex; gap: 10px; margin-top: 22px; }
+
+/* FEEDBACK DE VALIDACIÓN */
+.input-error,
+.admin-form-group input.is-invalid,
+.admin-form-group select.is-invalid,
+.admin-form-group textarea.is-invalid {
+    border-color: #8C2F2F !important;
+    background-color: #fff9f9 !important;
+}
+
+.admin-error--js {
+    color: #8C2F2F;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+}
+
+.char-counter {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.char-counter.limit-reached {
+    color: #8C2F2F;
+    font-weight: 600;
+}
+
+.image-preview-container {
+    margin-top: 10px;
+    padding: 10px;
+    background: #FAF8F5;
+    border: 1px dashed rgba(var(--burgundy-rgb), 0.25);
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.image-preview-container img {
+    max-width: 140px;
+    max-height: 140px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+}
+
+.image-preview-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-weight: 500;
+}

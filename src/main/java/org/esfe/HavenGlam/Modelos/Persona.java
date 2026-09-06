@@ -28,7 +28,7 @@ public class Persona {
 
     @NotBlank(message = "El telefono es obligatorio")
     @Size (max = 50, message = "El telefono no puede seperar los 8 digitos")
-    @Pattern(regexp = "^[0-8]{8,8}$", message = "El teléfono solo puede contener números")
+    @Pattern(regexp = "^[0-9]{8}$", message = "El teléfono debe tener exactamente 8 dígitos")
     @Column(name = "Telefono", length = 50, nullable = false)
     private String telefono;
 

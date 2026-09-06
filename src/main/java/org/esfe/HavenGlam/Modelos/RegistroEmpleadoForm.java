@@ -19,7 +19,7 @@ public class RegistroEmpleadoForm {
 
     @NotBlank(message = "El teléfono es obligatorio")
     @Size(max = 50, message = "El teléfono no puede superar los 50 caracteres")
-    @Pattern(regexp = "^[0-9]{8,9}$", message = "El teléfono solo puede contener números")
+    @Pattern(regexp = "^[0-9]{8}$", message = "El teléfono debe tener exactamente 8 dígitos")
     private String telefono;
 
     @NotBlank(message = "La dirección es obligatoria")

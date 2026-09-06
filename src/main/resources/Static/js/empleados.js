@@ -7,10 +7,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Solo números
-    function soloNumeros(input) {
+    // Solo números, máximo 8 dígitos
+    function soloNumerosTelefono(input) {
         input.addEventListener('input', function () {
-            this.value = this.value.replace(/[^0-9]/g, '');
+            let valor = this.value.replace(/[^0-9]/g, '');
+            if (valor.length > 8) {
+                valor = valor.substring(0, 8);
+            }
+            this.value = valor;
         });
     }
 
@@ -35,6 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (nombre) soloLetras(nombre);
     if (apellido) soloLetras(apellido);
-    if (telefono) soloNumeros(telefono);
+    if (telefono) soloNumerosTelefono(telefono);
     if (dui) formatoDui(dui);
 });

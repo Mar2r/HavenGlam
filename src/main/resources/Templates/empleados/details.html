@@ -36,7 +36,7 @@
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label for="telefono">Teléfono</label>
-                    <input type="text" id="telefono" th:field="*{persona.telefono}" pattern="[0-9]{8,9}" inputmode="numeric" title="Solo números" />
+                    <input type="text" id="telefono" th:field="*{persona.telefono}" pattern="[0-9]{8}" inputmode="numeric" maxlength="8" title="Debe tener exactamente 8 dígitos" />
                     <div class="admin-error" th:if="${#fields.hasErrors('persona.telefono')}" th:errors="*{persona.telefono}"></div>
                 </div>
 

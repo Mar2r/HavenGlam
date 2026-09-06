@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/admin.css}">
-    <link rel="stylesheet" href="../../Static/css/admin.css" th:href="@{/css/admin.css}">
     <th:block layout:fragment="extraStyles"></th:block>
 </head>
 
@@ -34,6 +33,11 @@
                th:classappend="${activePage == 'servicios'} ? 'active' : ''">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><circle cx="18" cy="17" r="2.4"/></svg>
                 Servicios
+            </a>
+            <a th:href="@{/categorias}" href="/categorias" class="nav-item"
+               th:classappend="${activePage == 'categoria'} ? 'active' : ''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.59 13.41L11 3.83A2 2 0 009.59 3.24H4a1 1 0 00-1 1v5.59a2 2 0 00.59 1.41l9.58 9.58a2 2 0 002.83 0l4.59-4.59a2 2 0 000-2.82z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg>
+                Categorías
             </a>
             <a th:href="@{/empleados}" href="/empleados/" class="nav-item"
                th:classappend="${activePage == 'empleados'} ? 'active' : ''">
@@ -82,7 +86,8 @@
             <div class="top-right">
                 <div class="search">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-                    <input type="text" placeholder="Buscar clienta, cita o servicio…" disabled title="Próximamente">
+                    <input type="text" id="adminSearchInput" placeholder="Buscar clienta, cita o servicio…" autocomplete="off">
+                    <div class="search-results" id="adminSearchResults"></div>
                 </div>
                 <div class="topbar-profile" id="topbarProfile">
                     <button class="profile-trigger" id="profileTrigger">
@@ -93,7 +98,6 @@
                         </svg>
                     </button>
                     <div class="profile-menu" id="profileMenu">
-                        <a th:href="@{/admin/perfil}" href="/admin/perfil">Mi perfil</a>
                         <a th:href="@{/logout}" href="/logout">Cerrar sesión</a>
                     </div>
                 </div>
@@ -108,7 +112,6 @@
 </div>
 
 <script th:src="@{/js/admin.js}"></script>
-<script src="../../Static/js/admin.js" th:src="@{/js/admin.js}"></script>
 <th:block layout:fragment="extraScripts"></th:block>
 
 </body>

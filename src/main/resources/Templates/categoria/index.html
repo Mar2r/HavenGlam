@@ -15,6 +15,8 @@
             <a th:href="@{/categorias/create}" class="btn btn-primary">+ Nueva categoría</a>
         </div>
 
+        <div class="admin-success" th:if="${mensajeExito}" th:text="${mensajeExito}"></div>
+
         <table class="admin-table">
             <thead>
             <tr>

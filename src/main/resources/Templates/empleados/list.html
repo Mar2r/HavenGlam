@@ -16,7 +16,6 @@
         <table class="admin-table">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Teléfono</th>
@@ -26,7 +25,6 @@
             </thead>
             <tbody>
             <tr th:each="empleado : ${empleados}">
-                <td th:text="${empleado.idEmpleado}"></td>
                 <td th:text="${empleado.persona != null ? empleado.persona.nombre : ''}"></td>
                 <td th:text="${empleado.persona != null ? empleado.persona.apellido : ''}"></td>
                 <td th:text="${empleado.persona != null ? empleado.persona.telefono : ''}"></td>
@@ -37,7 +35,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(empleados)}">
-                <td colspan="6" class="admin-table-empty">No hay empleados registrados.</td>
+                <td colspan="5" class="admin-table-empty">No hay empleados registrados.</td>
             </tr>
             </tbody>
         </table>

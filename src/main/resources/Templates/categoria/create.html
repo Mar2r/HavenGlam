@@ -14,18 +14,19 @@
             <h2>Nueva categoría</h2>
         </div>
 
-        <form th:action="@{/categorias/create}" th:object="${categoria}" method="post">
+        <form th:action="@{/categorias/create}" th:object="${categoria}" method="post" class="needs-validation" novalidate>
 
             <div class="admin-form-group">
                 <label for="nombreCategoria">Nombre</label>
-                <input type="text" id="nombreCategoria" th:field="*{nombreCategoria}" />
+                <input type="text" id="nombreCategoria" th:field="*{nombreCategoria}"
+                       required minlength="2" maxlength="60" autocomplete="off" />
                 <div class="admin-error" th:if="${#fields.hasErrors('nombreCategoria')}"
                      th:errors="*{nombreCategoria}"></div>
             </div>
 
             <div class="admin-form-group">
                 <label for="estado">Estado</label>
-                <select id="estado" th:field="*{estado}">
+                <select id="estado" th:field="*{estado}" required>
                     <option value="">Selecciona un estado</option>
                     <option th:each="e : ${estados}"
                             th:value="${e.idEstado}"

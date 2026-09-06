@@ -14,24 +14,27 @@
             <h2>Editar categoría</h2>
         </div>
 
-        <form th:action="@{'/categorias/edit/' + ${categoria.idCategoria}}" th:object="${categoria}" method="post">
+        <form th:action="@{'/categorias/edit/' + ${categoria.idCategoria}}" th:object="${categoria}" method="post" class="needs-validation" novalidate>
 
             <input type="hidden" th:field="*{idCategoria}" />
 
             <div class="admin-form-group">
                 <label for="nombreCategoria">Nombre</label>
-                <input type="text" id="nombreCategoria" th:field="*{nombreCategoria}" />
+                <input type="text" id="nombreCategoria" th:field="*{nombreCategoria}"
+                       required minlength="2" maxlength="60" autocomplete="off" />
                 <div class="admin-error" th:if="${#fields.hasErrors('nombreCategoria')}"
                      th:errors="*{nombreCategoria}"></div>
             </div>
 
             <div class="admin-form-group">
                 <label for="estado">Estado</label>
-                <select id="estado" th:field="*{estado}">
+                <select id="estado" th:field="*{estado}" required>
                     <option th:each="e : ${estados}"
                             th:value="${e.idEstado}"
                             th:text="${e.nombreEstado}"></option>
                 </select>
+                <div class="admin-error" th:if="${#fields.hasErrors('estado')}"
+                     th:errors="*{estado}"></div>
             </div>
 
             <div class="admin-form-actions">

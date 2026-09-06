@@ -70,7 +70,7 @@ public class EmpleadoController {
             model.addAttribute("estados", estadoService.listar());
             return "empleados/editar";
         }
-        empleadoService.guardar(empleado);
+        empleadoService.cambiarEstado(empleado.getIdEmpleado(), empleado.getEstado().getIdEstado());
         return "redirect:/empleados";
     }
 

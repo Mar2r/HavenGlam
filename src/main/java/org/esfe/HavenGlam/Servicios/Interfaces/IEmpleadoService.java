@@ -14,6 +14,8 @@ public interface IEmpleadoService {
 
     Empleado guardar(Empleado empleado);
 
+    Empleado cambiarEstado(Integer id, Integer idEstado);
+
     void eliminar(Integer id);
 
     boolean existePorId(Integer id);

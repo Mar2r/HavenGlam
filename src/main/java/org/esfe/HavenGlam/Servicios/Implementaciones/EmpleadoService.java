@@ -1,6 +1,7 @@
 package org.esfe.HavenGlam.Servicios.Implementaciones;
 
 import org.esfe.HavenGlam.Modelos.Empleado;
+import org.esfe.HavenGlam.Modelos.Estado;
 import org.esfe.HavenGlam.Repositorios.EmpleadoRepository;
 import org.esfe.HavenGlam.Servicios.Interfaces.IEmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,16 @@ public class EmpleadoService implements IEmpleadoService {
 
     @Override
     public Empleado guardar(Empleado empleado) {
+        return empleadoRepository.save(empleado);
+    }
+
+    @Override
+    public Empleado cambiarEstado(Integer id, Integer idEstado) {
+        Empleado empleado = empleadoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
+        Estado estado = new Estado();
+        estado.setIdEstado(idEstado);
+        empleado.setEstado(estado);
         return empleadoRepository.save(empleado);
     }
 

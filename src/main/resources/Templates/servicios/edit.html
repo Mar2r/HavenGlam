@@ -15,41 +15,42 @@
         </div>
 
         <form th:action="@{/servicios/editar/{id}(id=${servicio.idServicio})}" th:object="${servicio}" method="post"
-        enctype="multipart/form-data">
+              enctype="multipart/form-data">
 
             <input type="hidden" th:field="*{idServicio}" />
 
             <div class="admin-form-group">
                 <label for="nombreServicio">Nombre del servicio</label>
-                <input type="text" id="nombreServicio" th:field="*{nombreServicio}" />
+                <input type="text" id="nombreServicio" th:field="*{nombreServicio}"
+                       required minlength="3" maxlength="50" autocomplete="off" />
                 <div class="admin-error" th:if="${#fields.hasErrors('nombreServicio')}"
                      th:errors="*{nombreServicio}"></div>
             </div>
 
             <div class="admin-form-group">
                 <label for="descripcion">Descripción</label>
-                <textarea id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
+                <textarea id="descripcion" th:field="*{descripcion}" rows="3" maxlength="200"></textarea>
                 <div class="admin-error" th:if="${#fields.hasErrors('descripcion')}"
                      th:errors="*{descripcion}"></div>
             </div>
 
             <div class="admin-form-group">
                 <label for="precio">Precio</label>
-                <input type="number" step="0.01" min="0" id="precio" th:field="*{precio}" />
+                <input type="number" step="0.01" min="0.01" required id="precio" th:field="*{precio}" />
                 <div class="admin-error" th:if="${#fields.hasErrors('precio')}"
                      th:errors="*{precio}"></div>
             </div>
 
             <div class="admin-form-group">
                 <label for="duracionMinutos">Duración</label>
-                <input type="time" id="duracionMinutos" th:field="*{duracionMinutos}" />
+                <input type="time" id="duracionMinutos" th:field="*{duracionMinutos}" required />
                 <div class="admin-error" th:if="${#fields.hasErrors('duracionMinutos')}"
                      th:errors="*{duracionMinutos}"></div>
             </div>
 
             <div class="admin-form-group">
                 <label for="categoria">Categoría</label>
-                <select id="categoria" th:field="*{categoria.idCategoria}">
+                <select id="categoria" th:field="*{categoria.idCategoria}" required>
                     <option value="">Selecciona una categoría</option>
                     <option th:each="c : ${categorias}"
                             th:value="${c.idCategoria}"
@@ -61,7 +62,7 @@
 
             <div class="admin-form-group">
                 <label for="estado">Estado</label>
-                <select id="estado" th:field="*{estado.idEstado}">
+                <select id="estado" th:field="*{estado.idEstado}" required>
                     <option value="">Selecciona un estado</option>
                     <option th:each="e : ${estados}"
                             th:value="${e.idEstado}"
@@ -72,6 +73,7 @@
             </div>
 
             <div class="admin-form-group">
+                <div class="admin-error--box" th:if="${errorImagen}" th:text="${errorImagen}"></div>
                 <label>Imagen actual</label>
                 <img th:if="${servicio.imagenUrl != null}" th:src="${servicio.imagenUrl}"
                      style="max-width: 160px; border-radius: 8px; display: block; margin-bottom: 10px;" />

@@ -40,7 +40,7 @@ public class ServicioController {
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("servicio", new Servicio());
-        model.addAttribute("categorias", categoriaService.listar());
+        model.addAttribute("categorias", categoriaService.listarActivas());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "servicios/create";
     }
@@ -50,8 +50,13 @@ public class ServicioController {
                         BindingResult result,
                         @RequestParam(value = "file", required = false) MultipartFile file,
                         Model model) throws IOException {
+
+        if (!result.hasErrors() && existeNombreDuplicado(servicio)) {
+            result.rejectValue("nombreServicio", "duplicado", "Ya existe un servicio con este nombre");
+        }
+
         if (result.hasErrors()) {
-            model.addAttribute("categorias", categoriaService.listar());
+            model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "servicios/create";
         }
@@ -68,8 +73,8 @@ public class ServicioController {
         Servicio servicio = servicioService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con ID: " + id));
         model.addAttribute("servicio", servicio);
-        model.addAttribute("categorias", categoriaService.listar());
-        model.addAttribute("estados", estadoService.listar());
+        model.addAttribute("categorias", categoriaService.listarActivas());
+        model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "servicios/edit";
     }
 
@@ -79,8 +84,15 @@ public class ServicioController {
                          BindingResult result,
                          @RequestParam(value = "file", required = false) MultipartFile file,
                          Model model) throws IOException {
+
+        servicio.setIdServicio(id);
+
+        if (!result.hasErrors() && existeNombreDuplicado(servicio)) {
+            result.rejectValue("nombreServicio", "duplicado", "Ya existe otro servicio con este nombre");
+        }
+
         if (result.hasErrors()) {
-            model.addAttribute("categorias", categoriaService.listar());
+            model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "servicios/edit";
         }
@@ -89,13 +101,11 @@ public class ServicioController {
             String url = uploadService.uploadFile(file);
             servicio.setImagenUrl(url);
         } else {
-            // Sí no se subió imagen nueva va a mantener la que ya tenía
             Servicio existente = servicioService.buscarPorId(id)
                     .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con ID: " + id));
             servicio.setImagenUrl(existente.getImagenUrl());
         }
 
-        servicio.setIdServicio(id);
         servicioService.guardar(servicio);
         return "redirect:/servicios";
     }
@@ -120,5 +130,11 @@ public class ServicioController {
     public String eliminar(@PathVariable Integer id) {
         servicioService.eliminar(id);
         return "redirect:/servicios";
+    }
+
+    private boolean existeNombreDuplicado(Servicio servicio) {
+        return servicioService.listar().stream()
+                .anyMatch(s -> s.getNombreServicio().equalsIgnoreCase(servicio.getNombreServicio())
+                        && (servicio.getIdServicio() == null || !s.getIdServicio().equals(servicio.getIdServicio())));
     }
 }

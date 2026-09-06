@@ -40,7 +40,7 @@ public class ProductoController {
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("producto", new Producto());
-        model.addAttribute("categorias", categoriaService.listar());
+        model.addAttribute("categorias", categoriaService.listarActivas());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "productos/create";
     }
@@ -50,8 +50,13 @@ public class ProductoController {
                         BindingResult result,
                         @RequestParam(value = "file", required = false) MultipartFile file,
                         Model model) throws IOException {
+
+        if (!result.hasErrors() && existeNombreDuplicado(producto)) {
+            result.rejectValue("nombreProducto", "duplicado", "Ya existe un producto con este nombre");
+        }
+
         if (result.hasErrors()) {
-            model.addAttribute("categorias", categoriaService.listar());
+            model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "productos/create";
         }
@@ -68,7 +73,7 @@ public class ProductoController {
         Producto producto = productoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
         model.addAttribute("producto", producto);
-        model.addAttribute("categorias", categoriaService.listar());
+        model.addAttribute("categorias", categoriaService.listarActivas());
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "productos/edit";
     }
@@ -79,8 +84,15 @@ public class ProductoController {
                          BindingResult result,
                          @RequestParam(value = "file", required = false) MultipartFile file,
                          Model model) throws IOException {
+
+        producto.setIdProducto(id);
+
+        if (!result.hasErrors() && existeNombreDuplicado(producto)) {
+            result.rejectValue("nombreProducto", "duplicado", "Ya existe otro producto con este nombre");
+        }
+
         if (result.hasErrors()) {
-            model.addAttribute("categorias", categoriaService.listar());
+            model.addAttribute("categorias", categoriaService.listarActivas());
             model.addAttribute("estados", estadoService.listarPorTipo("General"));
             return "productos/edit";
         }
@@ -89,13 +101,11 @@ public class ProductoController {
             String url = uploadService.uploadFile(file);
             producto.setImagenUrl(url);
         } else {
-            // Si no se subió imagen nueva, se mantiene la que ya tenía
             Producto existente = productoService.buscarPorId(id)
                     .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
             producto.setImagenUrl(existente.getImagenUrl());
         }
 
-        producto.setIdProducto(id);
         productoService.guardar(producto);
         return "redirect:/productos";
     }
@@ -120,5 +130,11 @@ public class ProductoController {
     public String eliminar(@PathVariable Integer id) {
         productoService.eliminar(id);
         return "redirect:/productos";
+    }
+
+    private boolean existeNombreDuplicado(Producto producto) {
+        return productoService.listar().stream()
+                .anyMatch(p -> p.getNombreProducto().equalsIgnoreCase(producto.getNombreProducto())
+                        && (producto.getIdProducto() == null || !p.getIdProducto().equals(producto.getIdProducto())));
     }
 }

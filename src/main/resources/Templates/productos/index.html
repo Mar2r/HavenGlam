@@ -14,11 +14,10 @@
         </div>
         <table class="admin-table">
             <thead>
-            <tr><th>ID</th><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
+            <tr><th>Imagen</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr>
             </thead>
             <tbody>
             <tr th:each="producto : ${productos}">
-                <td th:text="${producto.idProducto}"></td>
                 <td>
                     <img th:if="${producto.imagenUrl != null}" th:src="${producto.imagenUrl}"
                          style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;" />
@@ -35,7 +34,7 @@
                 </td>
             </tr>
             <tr th:if="${#lists.isEmpty(productos)}">
-                <td colspan="8" class="admin-table-empty">No hay productos registrados.</td>
+                <td colspan="7" class="admin-table-empty">No hay productos registrados.</td>
             </tr>
             </tbody>
         </table>

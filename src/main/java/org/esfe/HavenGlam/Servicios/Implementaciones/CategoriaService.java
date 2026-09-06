@@ -18,6 +18,8 @@ public class CategoriaService implements ICategoriaService {
     public List<Categoria> listar() {
         return categoriaRepository.findAll();
     }
+    @Override
+    public List<Categoria> listarActivas() {return categoriaRepository.findByEstado_NombreEstadoIgnoreCase("Activo"); }
 
     @Override
     public Optional<Categoria> buscarPorId(Integer id){

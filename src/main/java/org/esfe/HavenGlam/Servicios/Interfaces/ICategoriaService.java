@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface ICategoriaService {
     List<Categoria> listar();
 
+    List<Categoria> listarActivas();
+
     Optional<Categoria> buscarPorId(Integer id);
 
     Categoria guardar(Categoria categoria);

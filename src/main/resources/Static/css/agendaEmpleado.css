@@ -1,0 +1,81 @@
+/* ==================== MODAL DE CONFIRMACIÓN AL CANCELAR ==================== */
+/* Oculto por defecto; solo se activa cuando el script lo requiera */
+.hg-modal-backdrop[hidden],
+.hg-modal-backdrop:not(.active) {
+    display: none !important;
+}
+
+.hg-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(43, 32, 31, 0.55);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+    animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.hg-modal-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 26px;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.hg-modal-icon-warning {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #fee2e2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.hg-modal-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2b201f;
+    margin: 0 0 8px;
+}
+
+.hg-modal-text {
+    font-size: 0.85rem;
+    color: #6b5d59;
+    line-height: 1.5;
+    margin: 0 0 22px;
+}
+
+.hg-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.hg-btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s ease;
+}
+
+.hg-btn-secondary { background: #eee4da; color: #2b201f; }
+.hg-btn-secondary:hover { background: #e2d6c9; }
+.hg-btn-danger { background: #74070e; color: #ffffff; }
+.hg-btn-danger:hover { background: #560509; }

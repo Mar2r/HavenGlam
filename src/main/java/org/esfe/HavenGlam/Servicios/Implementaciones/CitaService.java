@@ -6,6 +6,7 @@ import org.esfe.HavenGlam.Servicios.Interfaces.ICitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +29,7 @@ public class CitaService implements ICitaService {
 
     @Override
     public boolean existePorId(Integer id){ return citaRepository.existsById(id); }
+
+    @Override
+    public List<Cita> listarActivasPorFecha(LocalDate fecha){ return citaRepository.findActivasPorFecha(fecha); }
 }

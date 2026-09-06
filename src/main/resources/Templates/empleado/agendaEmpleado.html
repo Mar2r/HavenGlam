@@ -2,54 +2,231 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Mi Agenda · Haven Glam</title>
-    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi Agenda — Haven Glam</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/agendaEmpleado.css}" href="/css/agendaEmpleado.css">
+    <link rel="stylesheet" th:href="@{/css/agendaNavbar.css}" href="/css/agendaNavbar.css">
 </head>
-<body class="admin-app">
-<div style="max-width:960px; margin:0 auto; padding:40px 20px;">
 
-    <div style="margin-bottom:24px;">
-        <h1 style="font-family:'Fraunces', serif; font-weight:400; font-size:28px;">
-            Hola, <span th:text="${nombreEmpleado}">Empleado</span>
-        </h1>
-        <p style="color:#5B4A42;">Estas son tus citas de hoy.</p>
+<body class="hg-agenda-app">
+
+<!-- HEADER / NAVBAR DEL EMPLEADO -->
+<header class="hg-agenda-navbar">
+    <div class="hg-agenda-navbar-inner">
+        <a th:href="@{/}" href="/" class="hg-agenda-brand">
+            <span class="hg-agenda-brand-symbol">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                </svg>
+            </span>
+            <span class="hg-agenda-brand-text">
+                <span class="hg-agenda-brand-title">Haven Glam</span>
+                <span class="hg-agenda-brand-tagline">Agenda del Empleado</span>
+            </span>
+        </a>
+
+        <div class="hg-agenda-nav-actions">
+            <div th:if="${nombreUsuarioSesion != null}" class="hg-agenda-user-chip">
+                <span class="hg-agenda-user-avatar" th:text="${#strings.substring(nombreUsuarioSesion,0,1)}">E</span>
+                <span th:text="${nombreUsuarioSesion}">Empleado</span>
+            </div>
+
+            <a th:href="@{/logout}" href="/logout" class="hg-agenda-btn-logout">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="hg-agenda-content">
+
+    <!-- HERO DASHBOARD -->
+    <section class="hero">
+        <div class="hero-main">
+            <div class="eyebrow">Ingresos de hoy</div>
+            <div class="figure">$<span th:text="${#numbers.formatDecimal(ingresosHoy != null ? ingresosHoy : 340.00, 1, 'COMMA', 2, 'POINT')}">340.00</span></div>
+
+            <div class="delta" th:if="${variacionPorcentual != null}"
+                 th:classappend="${variacionPorcentual < 0} ? 'delta-down' : ''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 15l6-6 4 4 6-8"/></svg>
+                <span th:text="${(variacionPorcentual >= 0 ? '+' : '') + #numbers.formatDecimal(variacionPorcentual, 1, 1) + '% vs. el mismo día de la semana pasada'}">+12.5% vs. el mismo día de la semana pasada</span>
+            </div>
+            <div class="delta" th:unless="${variacionPorcentual != null}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 15l6-6 4 4 6-8"/></svg>
+                <span>+8.4% vs. el mismo día de la semana pasada</span>
+            </div>
+        </div>
+
+        <div class="hero-stat">
+            <div class="num" th:text="${citasHoyCount != null ? citasHoyCount : 8}">8</div>
+            <div class="lbl">Citas agendadas hoy</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num" th:text="${clientasEstaSemana != null ? clientasEstaSemana : 42}">42</div>
+            <div class="lbl">Clientas atendidas esta semana</div>
+        </div>
+        <div class="hero-stat">
+            <div class="num" th:text="${ocupacionPorcentaje != null ? ocupacionPorcentaje + '%' : '85%'}">85%</div>
+            <div class="lbl">Ocupación estimada del salón</div>
+        </div>
+    </section>
+
+    <!-- CALENDARIO MENSUAL DE LA AGENDA -->
+    <section class="panel hg-agenda-calendar-panel">
+        <div class="panel-head hg-calendar-head">
+            <div>
+                <h2>Agenda Mensual del Salón</h2>
+                <p class="hg-panel-subtitle">Visualiza y gestiona las citas asignadas para cada día del mes.</p>
+            </div>
+
+            <div class="hg-month-nav">
+                <button type="button" class="hg-btn-nav" id="btnPrevMonth" title="Mes Anterior" aria-label="Mes Anterior">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <div class="hg-current-month-display" id="currentMonthDisplay">
+                    <span class="hg-month-name" id="monthNameText">Septiembre</span>
+                    <span class="hg-year-num" id="yearNumText">2026</span>
+                </div>
+                <button type="button" class="hg-btn-nav" id="btnNextMonth" title="Mes Siguiente" aria-label="Mes Siguiente">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+                <button type="button" class="hg-btn-today" id="btnToday">Hoy</button>
+            </div>
+        </div>
+
+        <div class="hg-calendar-layout-container" id="agendaLayoutContainer">
+            <div class="hg-calendar-main-view">
+                <div class="hg-weekdays-row">
+                    <div class="hg-weekday-label">Lun</div>
+                    <div class="hg-weekday-label">Mar</div>
+                    <div class="hg-weekday-label">Mié</div>
+                    <div class="hg-weekday-label">Jue</div>
+                    <div class="hg-weekday-label">Vie</div>
+                    <div class="hg-weekday-label">Sáb</div>
+                    <div class="hg-weekday-label hg-sunday">Dom</div>
+                </div>
+
+                <div class="hg-calendar-grid" id="calendarDaysGrid"></div>
+            </div>
+
+            <aside class="hg-appointment-sidebar" id="appointmentSidebar" hidden>
+                <div class="hg-sidebar-header">
+                    <span class="status-pill" id="panelStatusBadge">CONFIRMADO</span>
+                    <button type="button" class="hg-btn-close-sidebar" id="btnCloseSidebar" title="Cerrar panel">&times;</button>
+                </div>
+
+                <div class="hg-sidebar-body">
+                    <div class="hg-client-card">
+                        <div class="client-cell">
+                            <span class="client-dot" id="panelClientAvatar">B</span>
+                            <div>
+                                <h4 class="hg-client-name" id="panelClientName">—</h4>
+                                <p class="hg-client-meta" id="panelClientEmail">—</p>
+                                <p class="hg-client-meta" id="panelClientPhone">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hg-timing-box">
+                        <div class="hg-timing-item">
+                            <span class="lbl">Fecha:</span>
+                            <strong id="panelDateStr">—</strong>
+                        </div>
+                        <div class="hg-timing-item">
+                            <span class="lbl">Hora:</span>
+                            <strong id="panelTimeSlot">—</strong>
+                        </div>
+                        <div class="hg-timing-item">
+                            <span class="lbl">Especialista:</span>
+                            <span id="panelProfessionalName">—</span>
+                        </div>
+                    </div>
+
+                    <div class="hg-services-detail-section">
+                        <span class="lbl">Servicios Solicitados:</span>
+                        <ul class="hg-services-detail-list" id="panelServicesList"></ul>
+                        <div class="hg-total-box">
+                            <span>Total a Cobrar:</span>
+                            <strong id="panelTotalAmount">$0.00</strong>
+                        </div>
+                    </div>
+
+                    <div class="hg-notes-box" id="panelNotesBox">
+                        <span class="lbl">Notas del Cliente:</span>
+                        <p id="panelNotesText">—</p>
+                    </div>
+
+                    <div class="hg-sidebar-actions">
+                        <button type="button" class="hg-btn-action hg-btn-confirm" id="btnActionConfirm">
+                            Marcar Confirmada
+                        </button>
+                        <button type="button" class="hg-btn-action hg-btn-complete" id="btnActionComplete">
+                            Marcar Completada
+                        </button>
+                        <button type="button" class="hg-btn-action hg-btn-cancel" id="btnActionCancel">
+                            Cancelar Cita
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- MODAL EMERGENTE DE VALIDACIÓN ANTES DE CANCELAR -->
+    <div class="hg-modal-backdrop" id="cancelConfirmModal" style="display: none;" hidden>
+        <div class="hg-modal-card">
+            <div class="hg-modal-icon-warning">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#b91c1c" stroke-width="2">
+                    <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
+            </div>
+            <h3 class="hg-modal-title">¿Estás seguro de cancelar esta cita?</h3>
+            <p class="hg-modal-text">
+                Al cancelar, el turno de las <strong id="modalCancelTimeSlot">09:30 AM</strong> quedará inmediatamente liberado para que otra clienta pueda agendarlo.
+            </p>
+            <div class="hg-modal-actions">
+                <button type="button" class="hg-btn hg-btn-secondary" id="btnModalCancelBack">No, mantener cita</button>
+                <button type="button" class="hg-btn hg-btn-danger" id="btnModalConfirmCancellation">Sí, cancelar cita</button>
+            </div>
+        </div>
     </div>
 
-    <div class="panel">
+    <!-- AGENDA DE HOY -->
+    <section class="panel">
         <div class="panel-head">
-            <h2>Agenda de hoy</h2>
+            <h2>Citas del Día de Hoy</h2>
         </div>
 
-        <div th:if="${#lists.isEmpty(citasHoy)}" class="empty-note">
-            No tienes citas programadas para hoy.
+        <div th:if="${#lists.isEmpty(citasHoy)}" class="empty-note">No hay citas programadas para hoy.</div>
+
+        <div class="agenda" th:unless="${#lists.isEmpty(citasHoy)}">
+            <div class="agenda-item" th:each="item : ${citasHoy}">
+                <div class="agenda-time">
+                    <span class="dot"></span>
+                    <span th:text="${#temporals.format(item.hora, 'HH:mm')}">09:30</span>
+                </div>
+                <div>
+                    <div class="agenda-client" th:text="${item.cliente}">—</div>
+                    <div class="agenda-service" th:text="${item.servicio + ' — ' + item.empleado}">—</div>
+                </div>
+                <span class="agenda-tag" th:classappend="${item.tagClass}" th:text="${item.estado}">CONFIRMADO</span>
+            </div>
         </div>
+    </section>
 
-        <div class="table-wrap" th:unless="${#lists.isEmpty(citasHoy)}">
-            <table>
-                <thead>
-                <tr>
-                    <th>Hora</th>
-                    <th>Cliente</th>
-                    <th>Observaciones</th>
-                    <th>Estado</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="cita : ${citasHoy}">
-                    <td th:text="${#temporals.format(cita.hora, 'HH:mm')}"></td>
-                    <td th:text="${cita.cliente.persona.nombre + ' ' + cita.cliente.persona.apellido}"></td>
-                    <td th:text="${cita.observaciones}"></td>
-                    <td th:text="${cita.estado != null ? cita.estado.nombreEstado : ''}"></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+</main>
 
-    <div style="margin-top:20px;">
-        <a th:href="@{/logout}" class="btn btn-secondary">Cerrar sesión</a>
-    </div>
+<script th:src="@{/js/empleado.js}" src="/js/empleado.js"></script>
 
-</div>
 </body>
 </html>

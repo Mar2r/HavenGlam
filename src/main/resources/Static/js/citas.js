@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingState = {
         currentStep: 1,
         maxServices: 3,
-        dayOffset: 0,
+        dayOffset: isTodayNoLongerBookable() ? 1 : 0,
         catalogServices: [],
         professionals: [],
         selectedServices: [],
@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const MAX_DAY_OFFSET = 84; // 12 semanas hacia adelante
+
+    // Devuelve true si ya no se puede reservar hoy (>= 17:00 p.m.)
+    function isTodayNoLongerBookable() {
+        const now = new Date();
+        const ultimoTurno = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 0, 0);
+        return now >= ultimoTurno;
+    }
 
     // ==========================================
     // 2. GENERACIÓN DE TURNOS (08:00 A 17:00 CADA 30 MIN)
@@ -349,8 +356,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!timeSlotsGrid) return;
         timeSlotsGrid.innerHTML = '';
 
+        const isHoy = bookingState.selectedDate === new Date().toISOString().split('T')[0];
+        const ahora = new Date();
+
         ALL_SLOTS.forEach(time => {
-            const isOccupied = busySlots.includes(time);
+            const [hh, mm] = time.split(':').map(Number);
+            const turnoPasado = isHoy && (hh < ahora.getHours() || (hh === ahora.getHours() && mm <= ahora.getMinutes()));
+            const isOccupied = busySlots.includes(time) || turnoPasado;
             const isSelected = bookingState.selectedTime === time;
 
             const btn = document.createElement('button');
@@ -460,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             case 4:
                 canProceed = true;
-                nextLabel = '🔒 Confirmar y Bloquear Cita';
+                nextLabel = ' Confirmar Cita';
                 break;
         }
 
@@ -548,11 +560,9 @@ document.addEventListener('DOMContentLoaded', () => {
         btnNext.disabled = true;
         btnNext.textContent = 'Bloqueando cita en Base de Datos...';
 
-        const authUserId = document.getElementById('auth-user-id')?.value || null;
         const notesInput = document.getElementById('booking-notes')?.value || '';
 
         const payload = {
-            usuarioId: authUserId ? parseInt(authUserId, 10) : null,
             profesionalId: bookingState.selectedProfessional.id,
             fecha: bookingState.selectedDate,
             horaInicio: bookingState.selectedTime,
@@ -573,12 +583,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const resData = await response.json().catch(() => ({}));
+            if (resData.status !== 'success') {
+                throw new Error(resData.mensaje || 'No se pudo procesar la reserva.');
+            }
             showSuccessScreen(resData.codigoCita || 'HG-2026-0000');
         } catch (error) {
             console.error('Error al enviar la reserva:', error);
             btnNext.disabled = false;
-            btnNext.textContent = '🔒 Confirmar y Bloquear Cita';
-            alert('No se pudo procesar la reserva. Intenta de nuevo.');
+            btnNext.textContent = ' Confirmar  Cita';
+            alert(error.message || 'No se pudo procesar la reserva. Intenta de nuevo.');
         }
     }
 

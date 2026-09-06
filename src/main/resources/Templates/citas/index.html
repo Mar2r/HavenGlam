@@ -125,36 +125,6 @@
                         </div>
                     </div>
 
-                    <!-- Tarjeta con usuario de la sesión de Spring Security / HttpSession -->
-                    <div class="hg-user-session-card">
-                        <div class="hg-user-badge-tag">Usuario Logueado (Sesión Servidor)</div>
-                        <div class="hg-user-session-grid">
-                            <div>
-                                <span class="hg-meta-label">Cliente:</span>
-                                <strong id="session-user-name"
-                                        th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.nombreCompleto : 'Beatriz Peña'}">
-                                    Beatriz Peña
-                                </strong>
-                            </div>
-                            <div>
-                                <span class="hg-meta-label">Correo:</span>
-                                <span id="session-user-email"
-                                      th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.email : 'bp25001@esfe.agape.edu.sv'}">
-                                    bp25001@esfe.agape.edu.sv
-                                </span>
-                            </div>
-                            <div>
-                                <span class="hg-meta-label">Teléfono:</span>
-                                <span id="session-user-phone"
-                                      th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.telefono : '7854-9921'}">
-                                    7854-9921
-                                </span>
-                            </div>
-                        </div>
-                        <input type="hidden" id="auth-user-id"
-                               th:value="${session.usuarioLogueado != null ? session.usuarioLogueado.id : 1042}" />
-                    </div>
-
                     <!-- Desglose de precios y servicios -->
                     <div class="hg-confirm-receipt" id="confirm-receipt-table"></div>
 

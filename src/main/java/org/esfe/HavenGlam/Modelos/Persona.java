@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -15,16 +16,19 @@ public class Persona {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50, message = "el nombre de la persona no puede superar los 50 caracteres")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "El nombre solo puede contener letras")
     @Column(name = "Nombre", length = 50, nullable = false)
     private String nombre;
 
     @NotBlank(message = "El apellido es obligatorio")
     @Size(max = 50, message = "El apellido no puede superar los 50 caracteres")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "El apellido solo puede contener letras")
     @Column(name = "Apellido", length = 50, nullable = false)
     private String apellido;
 
     @NotBlank(message = "El telefono es obligatorio")
-    @Size (max = 50, message = "El telefono no puede seperar los 9 digitos")
+    @Size (max = 50, message = "El telefono no puede seperar los 8 digitos")
+    @Pattern(regexp = "^[0-8]{8,8}$", message = "El teléfono solo puede contener números")
     @Column(name = "Telefono", length = 50, nullable = false)
     private String telefono;
 
@@ -34,6 +38,7 @@ public class Persona {
     private String direccion;
 
     @Size(max = 50, message = "El DUI no puede superar los 50 caracteres")
+    @Pattern(regexp = "^$|^[0-9]{8}-[0-9]$", message = "El DUI debe tener el formato 00000000-0")
     @Column(name = "DUI", length = 50, nullable = true)
     private String dui;
 

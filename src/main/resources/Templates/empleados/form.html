@@ -25,13 +25,13 @@
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" th:field="*{nombre}" />
+                    <input type="text" id="nombre" th:field="*{nombre}" pattern="[\p{L}\s]+" title="Solo letras" />
                     <div class="admin-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                 </div>
 
                 <div class="admin-form-group">
                     <label for="apellido">Apellido</label>
-                    <input type="text" id="apellido" th:field="*{apellido}" />
+                    <input type="text" id="apellido" th:field="*{apellido}" pattern="[\p{L}\s]+" title="Solo letras" />
                     <div class="admin-error" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
                 </div>
             </div>
@@ -39,13 +39,13 @@
             <div class="admin-form-row">
                 <div class="admin-form-group">
                     <label for="telefono">Teléfono</label>
-                    <input type="text" id="telefono" th:field="*{telefono}" />
+                    <input type="text" id="telefono" th:field="*{telefono}" pattern="[0-9]{8,9}" inputmode="numeric" title="Solo números" />
                     <div class="admin-error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
                 </div>
 
                 <div class="admin-form-group">
                     <label for="dui">DUI</label>
-                    <input type="text" id="dui" th:field="*{dui}" />
+                    <input type="text" id="dui" th:field="*{dui}" pattern="[0-9]{8}-[0-9]" title="Formato 00000000-0" maxlength="10" />
                     <div class="admin-error" th:if="${#fields.hasErrors('dui')}" th:errors="*{dui}"></div>
                 </div>
             </div>
@@ -78,6 +78,8 @@
     </div>
 
 </div>
+
+<script th:src="@{/js/empleados.js}"></script>
 
 </body>
 </html>

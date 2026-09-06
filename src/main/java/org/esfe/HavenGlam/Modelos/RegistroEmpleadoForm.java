@@ -2,20 +2,24 @@ package org.esfe.HavenGlam.Modelos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class RegistroEmpleadoForm {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 50, message = "El nombre no puede superar los 50 caracteres")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "El nombre solo puede contener letras")
     private String nombre;
 
     @NotBlank(message = "El apellido es obligatorio")
     @Size(max = 50, message = "El apellido no puede superar los 50 caracteres")
+    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "El apellido solo puede contener letras")
     private String apellido;
 
     @NotBlank(message = "El teléfono es obligatorio")
     @Size(max = 50, message = "El teléfono no puede superar los 50 caracteres")
+    @Pattern(regexp = "^[0-9]{8,9}$", message = "El teléfono solo puede contener números")
     private String telefono;
 
     @NotBlank(message = "La dirección es obligatoria")
@@ -23,6 +27,7 @@ public class RegistroEmpleadoForm {
     private String direccion;
 
     @Size(max = 50, message = "El DUI no puede superar los 50 caracteres")
+    @Pattern(regexp = "^$|^[0-9]{8}-[0-9]$", message = "El DUI debe tener el formato 00000000-0")
     private String dui;
 
     @NotBlank(message = "El correo es obligatorio")

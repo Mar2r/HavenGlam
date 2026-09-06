@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Eliminar empleado · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/empleados.css}">
+    <link rel="stylesheet" href="../../Static/css/empleados.css" th:href="@{/css/empleados.css}">
+</head>
+<body>
+
+<div class="container empleado-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2>Eliminar empleado</h2>
+        </div>
+
+        <div class="admin-warning-box">
+            ¿Estás seguro de que deseas eliminar a
+            <strong th:text="${empleado.persona.nombre + ' ' + empleado.persona.apellido}">Juan Pérez</strong>?
+            Esta acción no se puede deshacer.
+            <br><br>
+            <em>Ten en cuenta que si este empleado tiene citas asociadas, eliminarlo podría causar un error de integridad referencial en la base de datos.</em>
+        </div>
+
+        <form th:action="@{'/empleados/eliminar/' + ${empleado.idEmpleado}}" method="post" class="admin-delete-form">
+            <div class="admin-form-actions">
+                <button type="submit" class="btn btn-primary" style="background:#8C2F2F;">Sí, eliminar</button>
+                <a th:href="@{/empleados}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

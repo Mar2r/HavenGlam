@@ -30,6 +30,7 @@
                 <td th:text="${empleado.persona != null ? empleado.persona.telefono : ''}"></td>
                 <td th:text="${empleado.estado != null ? empleado.estado.nombreEstado : ''}"></td>
                 <td class="admin-table-actions">
+                    <a th:href="@{/empleados/details/{id}(id=${empleado.idEmpleado})}" class="btn btn-secondary">Detalles</a>
                     <a th:href="@{/empleados/editar/{id}(id=${empleado.idEmpleado})}" class="btn btn-secondary">Editar</a>
                     <a th:href="@{/empleados/eliminar/{id}(id=${empleado.idEmpleado})}" class="btn btn-danger">Eliminar</a>
                 </td>

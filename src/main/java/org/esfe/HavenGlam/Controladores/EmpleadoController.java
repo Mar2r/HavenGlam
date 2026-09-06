@@ -58,7 +58,7 @@ public class EmpleadoController {
         Empleado empleado = empleadoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
         model.addAttribute("empleado", empleado);
-        model.addAttribute("estados", estadoService.listar());
+        model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "empleados/editar";
     }
 
@@ -74,7 +74,23 @@ public class EmpleadoController {
         return "redirect:/empleados";
     }
 
+    @GetMapping("/details/{id}")
+    public String mostrarDetalle(@PathVariable Integer id, Model model) {
+        Empleado empleado = empleadoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
+        model.addAttribute("empleado", empleado);
+        return "empleados/details";
+    }
+
     @GetMapping("/eliminar/{id}")
+    public String confirmarEliminar(@PathVariable Integer id, Model model) {
+        Empleado empleado = empleadoService.buscarPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
+        model.addAttribute("empleado", empleado);
+        return "empleados/eliminar";
+    }
+
+    @PostMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         empleadoService.eliminar(id);
         return "redirect:/empleados";

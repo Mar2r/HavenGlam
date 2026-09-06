@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalle de empleado · Haven Glam Admin</title>
+    <link rel="stylesheet" th:href="@{/css/empleados.css}">
+    <link rel="stylesheet" href="../../Static/css/empleados.css" th:href="@{/css/empleados.css}">
+</head>
+<body>
+
+<div class="container empleado-page">
+
+    <div class="admin-card admin-card--form">
+        <div class="admin-card-header">
+            <h2 th:text="${empleado.persona.nombre + ' ' + empleado.persona.apellido}">Nombre Apellido</h2>
+        </div>
+
+        <dl class="admin-detail-grid">
+            <div class="admin-detail-item">
+                <dt>ID</dt>
+                <dd th:text="${empleado.idEmpleado}">1</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Nombre completo</dt>
+                <dd th:text="${empleado.persona.nombre + ' ' + empleado.persona.apellido}">Juan Pérez</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Teléfono</dt>
+                <dd th:text="${empleado.persona.telefono}">70000000</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>DUI</dt>
+                <dd th:text="${empleado.persona.dui != null ? empleado.persona.dui : '—'}">00000000-0</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Dirección</dt>
+                <dd th:text="${empleado.persona.direccion}">San Salvador</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Estado</dt>
+                <dd th:text="${empleado.estado.nombreEstado}">Activo</dd>
+            </div>
+        </dl>
+
+        <div class="admin-form-actions">
+            <a th:href="@{'/empleados/editar/' + ${empleado.idEmpleado}}" class="btn btn-primary">Editar</a>
+            <a th:href="@{/empleados}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

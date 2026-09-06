@@ -95,6 +95,7 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/",
                                 "/login",
+                                "/error",
                                 "/servicios",
                                 "/productos",
                                 "/citas/**",

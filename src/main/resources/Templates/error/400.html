@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Solicitud inválida · Haven Glam</title>
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body class="error-body">
+<div class="error-center-wrap">
+    <div class="error-card">
+        <span class="error-code">400</span>
+        <h1 th:text="${titulo} ?: 'Solicitud inválida'">Solicitud inválida</h1>
+        <p th:text="${mensaje} ?: 'La solicitud enviada no tiene el formato esperado. Revisa los datos e inténtalo de nuevo.'"></p>
+        <a th:href="@{/}" class="error-btn">Volver al inicio</a>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>No autenticado · Haven Glam</title>
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+</head>
+<body class="error-body">
+<div class="error-center-wrap">
+    <div class="error-card">
+        <span class="error-code">401</span>
+        <h1 th:text="${titulo} ?: 'Necesitas iniciar sesión'">Necesitas iniciar sesión</h1>
+        <p th:text="${mensaje} ?: 'Debes iniciar sesión para acceder a esta sección.'"></p>
+        <a th:href="@{/login}" class="error-btn">Ir a iniciar sesión</a>
+    </div>
+</div>
+</body>
+</html>

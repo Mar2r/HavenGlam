@@ -11,40 +11,50 @@
 
 <div layout:fragment="content">
 
-    <div class="container empleado-page">
-        <div class="admin-card">
-            <div class="admin-card-header">
-                <h2>Empleados</h2>
-                <a th:href="@{/empleados/crear}" class="btn btn-primary">Nuevo empleado</a>
-            </div>
-            <table class="admin-table">
-                <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Teléfono</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="empleado : ${empleados}">
-                    <td th:text="${empleado.persona != null ? empleado.persona.nombre : ''}"></td>
-                    <td th:text="${empleado.persona != null ? empleado.persona.apellido : ''}"></td>
-                    <td th:text="${empleado.persona != null ? empleado.persona.telefono : ''}"></td>
-                    <td th:text="${empleado.estado != null ? empleado.estado.nombreEstado : ''}"></td>
-                    <td class="admin-table-actions">
-                        <a th:href="@{/empleados/details/{id}(id=${empleado.idEmpleado})}" class="btn btn-secondary">Detalles</a>
-                        <a th:href="@{/empleados/editar/{id}(id=${empleado.idEmpleado})}" class="btn btn-secondary">Editar</a>
-                        <a th:href="@{/empleados/eliminar/{id}(id=${empleado.idEmpleado})}" class="btn btn-danger">Eliminar</a>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(empleados)}">
-                    <td colspan="5" class="admin-table-empty">No hay empleados registrados.</td>
-                </tr>
-                </tbody>
-            </table>
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Empleados</h2>
+            <a th:href="@{/empleados/crear}" class="btn btn-primary">Nuevo empleado</a>
         </div>
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Nombre completo</th>
+                <th>Teléfono</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="empleado : ${empleados}">
+                <td th:text="${empleado.persona != null ? empleado.persona.nombre + ' ' + empleado.persona.apellido : '—'}">Juan Pérez</td>
+                <td th:text="${empleado.persona != null ? empleado.persona.telefono : '—'}">70000000</td>
+                <td>
+                    <span th:text="${empleado.estado != null ? empleado.estado.nombreEstado : '—'}"
+                          class="admin-badge"
+                          th:classappend="${empleado.estado != null and empleado.estado.nombreEstado == 'Activo'}
+                                           ? 'admin-badge--activo'
+                                           : 'admin-badge--inactivo'">
+                        Activo
+                    </span>
+                </td>
+                <td class="admin-actions">
+                    <a th:href="@{/empleados/details/{id}(id=${empleado.idEmpleado})}" class="admin-icon-btn">Ver</a>
+                    <a th:href="@{/empleados/editar/{id}(id=${empleado.idEmpleado})}" class="admin-icon-btn">Editar</a>
+                    <a th:href="@{/empleados/eliminar/{id}(id=${empleado.idEmpleado})}"
+                       class="admin-icon-btn admin-icon-btn--danger">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${empleados.isEmpty()}">
+                <td colspan="4" style="text-align:center; color: var(--ink-soft); padding: 24px;">
+                    Aún no hay empleados registrados.
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 </div>

@@ -1,124 +1,145 @@
-:root{
-    --creme:#EEE4DA;
-    --sand:#D8C4AC;
-    --dusty:#C8A49F;
-    --burgundy:#4D0E13;
-    --ink:#2B1B16;
-    --muted:#8a7a6d;
-    --border:#e4d9cb;
-    --white:#FFFFFF;
-}
-
-*{ box-sizing:border-box; }
-
-body{
-    margin:0;
-    font-family:'Jost', 'Segoe UI', sans-serif;
-    background:#f6f2ec;
-    color:var(--ink);
-}
-
-.container{ max-width:960px; margin:0 auto; padding:40px 24px; }
-
-body.admin-app .container { max-width: 100%; margin: 0; padding: 0; }
-body.admin-app .empleado-page { padding: 0; }
+/* =====================================================
+   HAVEN GLAM · EMPLEADOS (admin)
+   Reutiliza las variables definidas en admin.css
+   (--burgundy, --surface, --line, --radius-*, etc.)
+   Mismo patrón que clientes.css para mantener consistencia visual.
+   ===================================================== */
 
 .admin-card{
-    background:var(--white);
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:32px;
-    box-shadow:0 2px 14px rgba(43,27,22,0.05);
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    padding:28px 30px;
 }
-
 .admin-card-header{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin-bottom:24px;
+    margin-bottom:22px;
+    gap:16px;
+    flex-wrap:wrap;
 }
-.admin-card-header h2{ margin:0; font-size:22px; color:var(--ink); }
+.admin-card-header h2{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:19px;
+    color:var(--burgundy);
+}
 
+/* ---------- Botones ---------- */
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:11px 22px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:600;
+    border:1px solid transparent;
+    cursor:pointer;
+    text-decoration:none;
+    transition:background .2s ease, transform .2s ease;
+}
+.btn-primary{ background:var(--burgundy); color:var(--creme); }
+.btn-primary:hover{ background:var(--burgundy-light); }
+.btn-secondary{
+    background:var(--surface);
+    color:var(--burgundy);
+    border-color:var(--line);
+}
+.btn-secondary:hover{ background:var(--creme); border-color:var(--burgundy); }
+
+/* ---------- Tabla ---------- */
+.admin-table{ width:100%; border-collapse:collapse; font-size:14px; }
+.admin-table thead th{
+    text-align:left;
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+    padding:0 14px 12px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+}
+.admin-table tbody td{
+    padding:14px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+}
+.admin-table tbody tr:last-child td{ border-bottom:none; }
+.admin-table tbody tr:hover{ background:rgba(43,26,20,0.025); }
+
+/* ---------- Badges de estado ---------- */
+.admin-badge{
+    font-size:11.5px;
+    font-weight:600;
+    padding:5px 12px;
+    border-radius:999px;
+    display:inline-block;
+}
+.admin-badge--activo{ background:#DDE7DC; color:#375A38; }
+.admin-badge--inactivo{ background:#F1DCDC; color:#8A3A3A; }
+
+/* ---------- Acciones de fila ---------- */
+.admin-actions{ display:flex; gap:8px; white-space:nowrap; }
+.admin-icon-btn{
+    font-size:13px;
+    font-weight:600;
+    padding:7px 14px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--creme);
+    color:var(--burgundy);
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+}
+.admin-icon-btn:hover{ background:var(--sand); }
+.admin-icon-btn--danger{ color:#8A3A3A; border-color:rgba(138,58,58,0.25); }
+.admin-icon-btn--danger:hover{ background:#F1DCDC; }
+
+/* ---------- Formulario (editar / crear) ---------- */
 .admin-form-row{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:18px;
 }
-
 .admin-form-group{ margin-bottom:18px; }
 .admin-form-group label{
     display:block;
     font-size:13px;
     color:var(--ink);
     margin-bottom:6px;
+    font-weight:500;
 }
-.admin-form-group input{
-    width:100%;
-    padding:11px 14px;
-    border-radius:10px;
-    border:1px solid var(--border);
-    font-size:14px;
-    font-family:inherit;
-    color:var(--ink);
-    outline:none;
-    transition:border-color .15s ease;
-}
-.admin-form-group input:focus{ border-color:var(--burgundy); }
-
+.admin-form-group input,
 .admin-form-group select{
     width:100%;
     padding:11px 14px;
-    border-radius:10px;
-    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    border:1px solid var(--line);
     font-size:14px;
     font-family:inherit;
     color:var(--ink);
-    background:var(--white);
+    background:var(--surface);
     outline:none;
+    transition:border-color .15s ease;
+}
+.admin-form-group select{
     cursor:pointer;
     appearance:none;
     -webkit-appearance:none;
     -moz-appearance:none;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1L6 6L11 1' stroke='%238a7a6d' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1L6 6L11 1' stroke='%235B4A42' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
     background-repeat:no-repeat;
     background-position:right 14px center;
     padding-right:36px;
-    transition:border-color .15s ease;
 }
+.admin-form-group input:focus,
 .admin-form-group select:focus{ border-color:var(--burgundy); }
 
 .admin-form-actions{ display:flex; gap:12px; margin-top:8px; }
 
-.btn{
-    padding:11px 22px;
-    border-radius:999px;
-    font-size:14px;
-    text-decoration:none;
-    cursor:pointer;
-    border:none;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-}
-.btn-primary,
-body.admin-app a.btn-primary,
-body.admin-app button.btn-primary { 
-    background:var(--burgundy); 
-    color:#FFFFFF !important; 
-}
-.btn-primary:hover,
-body.admin-app a.btn-primary:hover,
-body.admin-app button.btn-primary:hover { 
-    background:#3a0a0f; 
-    color:#FFFFFF !important; 
-}
-.btn-secondary{ background:transparent; color:var(--muted); border:1px solid var(--border); }
-.btn-secondary:hover{ color:var(--ink); border-color:var(--ink); }
-
-@media (max-width:640px){
-    .admin-form-row{ grid-template-columns:1fr; }
-}
-
+/* ---------- Detalle (solo lectura) ---------- */
 .admin-detail-grid{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -129,7 +150,7 @@ body.admin-app button.btn-primary:hover {
 }
 .admin-detail-item dt{
     font-size:12px;
-    color:var(--muted);
+    color:var(--ink-soft);
     margin-bottom:4px;
 }
 .admin-detail-item dd{
@@ -139,80 +160,6 @@ body.admin-app button.btn-primary:hover {
 }
 
 @media (max-width:640px){
+    .admin-form-row{ grid-template-columns:1fr; }
     .admin-detail-grid{ grid-template-columns:1fr; }
-}
-
-.admin-table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:14px;
-}
-
-.admin-table thead th{
-    text-align:left;
-    font-size:12px;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-    color:var(--muted);
-    padding:12px 14px;
-    border-bottom:1px solid var(--border);
-}
-
-.admin-table tbody td{
-    padding:14px;
-    border-bottom:1px solid var(--border);
-    color:var(--ink);
-}
-
-.admin-table tbody tr:hover{
-    background:#faf7f2;
-}
-
-.admin-table-empty{
-    text-align:center;
-    color:var(--muted);
-    padding:28px 14px !important;
-}
-
-.admin-table-actions{
-    display:flex;
-    gap:8px;
-    white-space:nowrap;
-}
-
-.admin-table-actions .btn{
-    padding:7px 16px;
-    font-size:13px;
-}
-
-.btn-danger{
-    background:transparent;
-    color:#B23A3A;
-    border:1px solid #e7b7b3;
-}
-.btn-danger:hover{
-    background:#B23A3A;
-    color:var(--white);
-    border-color:#B23A3A;
-}
-
-@media (max-width:640px){
-    .admin-table{ font-size:13px; }
-    .admin-table thead{ display:none; }
-    .admin-table tbody tr{
-        display:block;
-        margin-bottom:14px;
-        border:1px solid var(--border);
-        border-radius:12px;
-        overflow:hidden;
-    }
-    .admin-table tbody td{
-        display:flex;
-        justify-content:space-between;
-        gap:12px;
-        border-bottom:1px solid var(--border);
-    }
-    .admin-table-actions{
-        justify-content:flex-end;
-    }
 }

@@ -41,6 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String manejarErrorGeneral(Exception ex, Model model) {
+        ex.printStackTrace(); // para ver la causa real en consola
         model.addAttribute("titulo", "Algo salió mal");
         model.addAttribute("mensaje", "Ocurrió un error inesperado. Ya estamos al tanto.");
         return "error/500";

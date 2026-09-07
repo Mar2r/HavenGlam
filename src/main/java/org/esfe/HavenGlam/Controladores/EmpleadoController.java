@@ -25,24 +25,14 @@ public class EmpleadoController {
     @Autowired
     private IEstadoService estadoService;
 
-    @ModelAttribute
-    public void agregarAtributosComunes(Model model) {
-        model.addAttribute("activePage", "empleados");
-        model.addAttribute("nombreAdmin", "Administrador");
-    }
-
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("pageTitle", "Empleados");
-        model.addAttribute("pageSubtitle", "Equipo y especialistas profesionales de Haven Glam");
         model.addAttribute("empleados", empleadoService.listar());
         return "empleados/list";
     }
 
     @GetMapping("/crear")
     public String mostrarFormularioCrear(Model model) {
-        model.addAttribute("pageTitle", "Nuevo Empleado");
-        model.addAttribute("pageSubtitle", "Registrar un nuevo miembro del equipo");
         model.addAttribute("registroEmpleado", new RegistroEmpleadoForm());
         return "empleados/form";
     }
@@ -52,15 +42,11 @@ public class EmpleadoController {
                             BindingResult result,
                             Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("pageTitle", "Nuevo Empleado");
-            model.addAttribute("pageSubtitle", "Registrar un nuevo miembro del equipo");
             return "empleados/form";
         }
         try {
             registroService.registrarEmpleado(form);
         } catch (IllegalStateException ex) {
-            model.addAttribute("pageTitle", "Nuevo Empleado");
-            model.addAttribute("pageSubtitle", "Registrar un nuevo miembro del equipo");
             model.addAttribute("errorRegistro", ex.getMessage());
             return "empleados/form";
         }
@@ -71,8 +57,6 @@ public class EmpleadoController {
     public String mostrarFormularioEditar(@PathVariable Integer id, Model model) {
         Empleado empleado = empleadoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
-        model.addAttribute("pageTitle", "Editar Empleado");
-        model.addAttribute("pageSubtitle", "Modificar estado y datos del empleado");
         model.addAttribute("empleado", empleado);
         model.addAttribute("estados", estadoService.listarPorTipo("General"));
         return "empleados/editar";
@@ -83,8 +67,6 @@ public class EmpleadoController {
                           BindingResult result,
                           Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("pageTitle", "Editar Empleado");
-            model.addAttribute("pageSubtitle", "Modificar estado y datos del empleado");
             model.addAttribute("estados", estadoService.listar());
             return "empleados/editar";
         }
@@ -96,8 +78,6 @@ public class EmpleadoController {
     public String mostrarDetalle(@PathVariable Integer id, Model model) {
         Empleado empleado = empleadoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
-        model.addAttribute("pageTitle", "Detalle del Empleado");
-        model.addAttribute("pageSubtitle", "Información detallada del profesional");
         model.addAttribute("empleado", empleado);
         return "empleados/details";
     }
@@ -106,8 +86,6 @@ public class EmpleadoController {
     public String confirmarEliminar(@PathVariable Integer id, Model model) {
         Empleado empleado = empleadoService.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado con ID: " + id));
-        model.addAttribute("pageTitle", "Eliminar Empleado");
-        model.addAttribute("pageSubtitle", "Confirmación para dar de baja a un empleado");
         model.addAttribute("empleado", empleado);
         return "empleados/eliminar";
     }

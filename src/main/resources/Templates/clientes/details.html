@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutAdmin}">
+<head>
+    <meta charset="UTF-8" />
+    <title>Detalle del cliente</title>
+    <link rel="stylesheet" th:href="@{/css/clientes.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h2>Detalle del cliente</h2>
+        </div>
+
+        <dl class="admin-detail-grid">
+            <div class="admin-detail-item">
+                <dt>Nombre completo</dt>
+                <dd th:text="${cliente.persona != null ? cliente.persona.nombre + ' ' + cliente.persona.apellido : '—'}">Juan Pérez</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Teléfono</dt>
+                <dd th:text="${cliente.persona != null ? cliente.persona.telefono : '—'}">70000000</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>DUI</dt>
+                <dd th:text="${cliente.persona != null and cliente.persona.dui != null ? cliente.persona.dui : '—'}">—</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Dirección</dt>
+                <dd th:text="${cliente.persona != null and cliente.persona.direccion != null ? cliente.persona.direccion : '—'}">—</dd>
+            </div>
+            <div class="admin-detail-item">
+                <dt>Estado</dt>
+                <dd>
+                    <span th:text="${cliente.estado != null ? cliente.estado.nombreEstado : '—'}"
+                          class="admin-badge"
+                          th:classappend="${cliente.estado != null and cliente.estado.nombreEstado == 'Activo'}
+                                           ? 'admin-badge--activo'
+                                           : 'admin-badge--inactivo'">
+                        Activo
+                    </span>
+                </dd>
+            </div>
+        </dl>
+
+        <div class="admin-form-actions">
+            <a th:href="@{'/clientes/editar/' + ${cliente.idCliente}}" class="btn btn-primary">Editar</a>
+            <a th:href="@{/clientes}" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

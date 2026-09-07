@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutAdmin}">
+<head>
+  <meta charset="UTF-8" />
+  <title>Clientes</title>
+  <link rel="stylesheet" th:href="@{/css/clientes.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <h2>Clientes</h2>
+      <a th:href="@{/clientes/crear}" class="btn btn-primary">Nuevo cliente</a>
+    </div>
+
+    <table class="admin-table">
+      <thead>
+      <tr>
+        <th>Nombre completo</th>
+        <th>Teléfono</th>
+        <th>DUI</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="cliente : ${clientes}">
+        <td th:text="${cliente.persona != null ? cliente.persona.nombre + ' ' + cliente.persona.apellido : '—'}">Juan Pérez</td>
+        <td th:text="${cliente.persona != null ? cliente.persona.telefono : '—'}">70000000</td>
+        <td th:text="${cliente.persona != null and cliente.persona.dui != null ? cliente.persona.dui : '—'}">—</td>
+        <td>
+    <span th:text="${cliente.estado != null ? cliente.estado.nombreEstado : '—'}"
+          class="admin-badge"
+          th:classappend="${cliente.estado != null and cliente.estado.nombreEstado == 'Activo'}
+                           ? 'admin-badge--activo'
+                           : 'admin-badge--inactivo'">
+        Activo
+    </span>
+        </td>
+        <td class="admin-actions">
+          <a th:href="@{'/clientes/detalle/' + ${cliente.idCliente}}" class="admin-icon-btn">Ver</a>
+          <a th:href="@{'/clientes/editar/' + ${cliente.idCliente}}" class="admin-icon-btn">Editar</a>
+          <a th:href="@{'/clientes/eliminar/' + ${cliente.idCliente}}"
+             class="admin-icon-btn admin-icon-btn--danger">
+            Eliminar
+          </a>
+        </td>
+      </tr>
+      <tr th:if="${clientes.isEmpty()}">
+        <td colspan="5" style="text-align:center; color: var(--ink-soft); padding: 24px;">
+          Aún no hay clientes registrados.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

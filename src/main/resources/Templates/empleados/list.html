@@ -2,21 +2,20 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layoutAdmin}">
-
 <head>
-    <title>Empleados · Haven Glam Admin</title>
-    <th:block layout:fragment="extraStyles">
-        <link rel="stylesheet" th:href="@{/css/Empleados.css}">
-    </th:block>
+    <meta charset="UTF-8" />
+    <title>Empleados</title>
+    <link rel="stylesheet" th:href="@{/css/empleados.css}">
 </head>
-
 <body>
-<th:block layout:fragment="content">
+
+<div layout:fragment="content">
+
     <div class="container empleado-page">
         <div class="admin-card">
             <div class="admin-card-header">
-                <h2>Equipo y Profesionales</h2>
-                <a th:href="@{/empleados/crear}" class="btn btn-primary">+ Nuevo empleado</a>
+                <h2>Empleados</h2>
+                <a th:href="@{/empleados/crear}" class="btn btn-primary">Nuevo empleado</a>
             </div>
             <table class="admin-table">
                 <thead>
@@ -47,10 +46,8 @@
             </table>
         </div>
     </div>
-</th:block>
 
-<th:block layout:fragment="extraScripts">
-    <script th:src="@{/js/empleados.js}"></script>
-</th:block>
+</div>
+
 </body>
 </html>

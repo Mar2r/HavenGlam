@@ -118,7 +118,8 @@ public class SecurityConfig {
                                 "/categorias/**",
                                 "/servicios/**",
                                 "/productos/**",
-                                "/citaservicios/**"
+                                "/citaservicios/**",
+                                "/clientes/**"
                         ).hasRole("ADMINISTRADOR")
                         .requestMatchers(
                                 "/agendaEmpleado",

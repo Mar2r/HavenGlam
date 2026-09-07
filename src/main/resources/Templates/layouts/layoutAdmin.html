@@ -49,6 +49,11 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3.27 8.27L12 13l8.73-4.73"/><path d="M12 21.5V13"/></svg>
                 Productos
             </a>
+            <a th:href="@{/clientes}" href="/clientes" class="nav-item"
+               th:classappend="${activePage == 'clientes'} ? 'active' : ''">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20c0-3.4 2.9-6 6.5-6s6.5 2.6 6.5 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.5 13.2c2.6.4 4.5 2.4 4.5 4.8"/></svg>
+                Clientes
+            </a>
         </nav>
 
         <div class="sidebar-foot">

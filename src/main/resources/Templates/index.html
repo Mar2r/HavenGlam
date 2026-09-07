@@ -6,24 +6,73 @@
 
 <head>
     <title>Inicio Haven Glam</title>
+    <th:block layout:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/inicio.css}">
+    </th:block>
 </head>
 
 <body>
 
 <main layout:fragment="content">
 
-    <section style="padding: 60px 20px; text-align: center;">
+    <!-- HERO CON FOTO DE FONDO -->
+    <section class="hg-home-hero"
+             th:style="${heroServicio != null and heroServicio.imagenUrl != null}
+                            ? 'background-image: linear-gradient(180deg, rgba(44,27,24,0.35), rgba(44,27,24,0.65)), url(' + ${heroServicio.imagenUrl} + ');'
+                            : ''">
+        <div class="hg-home-hero-content">
+            <h1>Bienvenido a Haven Glam</h1>
+            <p>Tu santuario personal de belleza y bienestar.</p>
+        </div>
+    </section>
 
-        <h1 style="font-family: 'Playfair Display', serif;
-                       font-size: 2.5rem;
-                       margin-bottom: 15px;">
-            Bienvenido a Haven Glam
-        </h1>
+    <!-- INFORMACIÓN SOBRE HAVEN GLAM -->
+    <section class="hg-home-about">
+        <div class="hg-home-about-inner">
+            <h2>Sobre Haven Glam</h2>
+            <p>
+                En Haven Glam creemos que el cuidado personal es un acto de bienestar integral.
+                Combinamos técnicas profesionales, productos de calidad y un ambiente cálido para
+                ofrecerte una experiencia de belleza pensada en cada detalle.
+            </p>
+            <p>
+                Nuestro equipo de especialistas te acompaña en tratamientos de cabello, piel, manos
+                y bienestar general, adaptando cada servicio a lo que tu rutina de cuidado necesita.
+            </p>
+        </div>
+    </section>
 
-        <p style="color: #7A655E; font-size: 1.1rem;">
-            Tu santuario personal de belleza y bienestar.
-        </p>
+    <!-- SERVICIOS DESTACADOS -->
+    <section class="hg-home-services">
+        <div class="hg-home-services-head">
+            <h2>Nuestros Servicios</h2>
+            <p>Una muestra de los tratamientos que puedes reservar hoy mismo.</p>
+        </div>
 
+        <div class="hg-home-services-grid" th:if="${not #lists.isEmpty(serviciosDestacados)}">
+            <article class="hg-home-service-card" th:each="servicio : ${serviciosDestacados}">
+                <div class="hg-home-service-img">
+                    <img th:src="${servicio.imagenUrl}" th:alt="${servicio.nombreServicio}">
+                </div>
+                <div class="hg-home-service-body">
+                    <h3 th:text="${servicio.nombreServicio}">Servicio</h3>
+                    <p th:text="${servicio.descripcion != null and !servicio.descripcion.isBlank()
+                                    ? servicio.descripcion
+                                    : 'Consulta con nuestro equipo para más detalles.'}">
+                        Descripción
+                    </p>
+                    <span class="hg-home-service-price" th:text="${'$' + servicio.precio}">$0.00</span>
+                </div>
+            </article>
+        </div>
+
+        <div class="hg-home-services-empty" th:if="${#lists.isEmpty(serviciosDestacados)}">
+            <p>Muy pronto tendremos servicios disponibles para mostrarte.</p>
+        </div>
+
+        <div class="hg-home-services-cta">
+            <a th:href="@{/catalogo/servicios}" href="/catalogo/servicios">Ver todos los servicios</a>
+        </div>
     </section>
 
 </main>

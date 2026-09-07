@@ -1,0 +1,174 @@
+/* Reutiliza las variables definidas en client.css */
+
+.hg-home-hero {
+    position: relative;
+    min-height: 460px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: var(--burgundy);
+    background-size: cover;
+    background-position: center;
+    padding: 40px 24px;
+}
+
+.hg-home-hero-content h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    color: var(--white);
+    margin: 0 0 14px;
+}
+
+.hg-home-hero-content p {
+    color: var(--creme);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.hg-home-about {
+    padding: 60px 24px;
+    background: var(--white);
+}
+
+.hg-home-about-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hg-home-about-inner h2 {
+    font-family: var(--font-display);
+    color: var(--burgundy);
+    font-size: 1.8rem;
+    margin: 0 0 18px;
+}
+
+.hg-home-about-inner p {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0 0 14px;
+}
+
+.hg-home-services {
+    padding: 60px 24px 80px;
+    background: var(--creme);
+}
+
+.hg-home-services-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 34px;
+}
+
+.hg-home-services-head h2 {
+    font-family: var(--font-display);
+    color: var(--burgundy);
+    font-size: 1.8rem;
+    margin: 0 0 8px;
+}
+
+.hg-home-services-head p {
+    color: var(--muted);
+    margin: 0;
+}
+
+.hg-home-services-grid {
+    max-width: var(--container-max, 1240px);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 26px;
+}
+
+.hg-home-service-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hg-home-service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+}
+
+.hg-home-service-img {
+    height: 170px;
+    overflow: hidden;
+}
+
+.hg-home-service-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hg-home-service-body {
+    padding: 18px 20px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.hg-home-service-body h3 {
+    font-family: var(--font-display);
+    color: var(--ink);
+    font-size: 1.05rem;
+    margin: 0 0 8px;
+}
+
+.hg-home-service-body p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin: 0 0 14px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hg-home-service-price {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--burgundy);
+    font-size: 1.1rem;
+}
+
+.hg-home-services-empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 30px 0;
+}
+
+.hg-home-services-cta {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.hg-home-services-cta a {
+    display: inline-flex;
+    padding: 12px 30px;
+    border-radius: var(--radius-pill);
+    background: var(--burgundy);
+    color: var(--white) !important;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.hg-home-services-cta a:hover {
+    background: var(--burgundy-dark);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+    .hg-home-hero { min-height: 340px; }
+}

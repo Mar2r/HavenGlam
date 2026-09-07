@@ -126,6 +126,12 @@ public class ProductoController {
         return "redirect:/productos";
     }
 
+    // En ProductoController (o el mismo controller nuevo)
+    @GetMapping("/catalogo/productos")
+    public String inicioProducto(Model model) {
+        model.addAttribute("productos", productoService.listar());
+        return "productos/inicioProducto";
+    }
     @GetMapping("/detalles/{id}")
     public String detalles(@PathVariable Integer id, Model model) {
         Producto producto = productoService.buscarPorId(id)

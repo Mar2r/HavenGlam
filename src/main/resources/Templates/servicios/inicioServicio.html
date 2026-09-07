@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutClient}">
+
+<head>
+    <title>Nuestros Servicios · Haven Glam</title>
+    <th:block layout:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/catalogoCliente.css}">
+    </th:block>
+</head>
+
+<body>
+
+<main layout:fragment="content">
+
+    <div class="hg-catalog-wrapper">
+
+        <header class="hg-catalog-head">
+            <span class="hg-badge-eyebrow">Catálogo</span>
+            <h1 class="hg-catalog-title">Nuestros Servicios</h1>
+            <p class="hg-catalog-desc">
+                Descubre los tratamientos de belleza y bienestar que tenemos preparados para ti en Haven Glam.
+            </p>
+        </header>
+
+        <div class="hg-catalog-grid" th:if="${not #lists.isEmpty(servicios)}">
+            <article class="hg-catalog-card" th:each="servicio : ${servicios}">
+
+                <div class="hg-catalog-card-img">
+                    <img th:if="${servicio.imagenUrl != null}"
+                         th:src="${servicio.imagenUrl}"
+                         th:alt="${servicio.nombreServicio}">
+                    <div class="hg-catalog-img-placeholder" th:unless="${servicio.imagenUrl != null}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/>
+                            <circle cx="18" cy="17" r="2.4"/>
+                        </svg>
+                    </div>
+                    <span class="hg-catalog-category"
+                          th:if="${servicio.categoria != null}"
+                          th:text="${servicio.categoria.nombreCategoria}">Categoría</span>
+                </div>
+
+                <div class="hg-catalog-card-body">
+                    <h3 class="hg-catalog-card-title" th:text="${servicio.nombreServicio}">Servicio</h3>
+
+                    <p class="hg-catalog-card-desc"
+                       th:text="${servicio.descripcion != null and !servicio.descripcion.isBlank()
+                                    ? servicio.descripcion
+                                    : 'Consulta con nuestro equipo para más detalles.'}">
+                        Descripción del servicio.
+                    </p>
+
+                    <div class="hg-catalog-card-meta">
+                        <span class="hg-catalog-duration" th:if="${servicio.duracionMinutos != null}">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                            </svg>
+                            <span th:text="${#temporals.format(servicio.duracionMinutos, 'HH:mm')} + ' hrs'">00:30 hrs</span>
+                        </span>
+                        <span class="hg-catalog-price" th:text="${'$' + servicio.precio}">$0.00</span>
+                    </div>
+
+                    <a th:href="@{/citas}" class="hg-catalog-cta">Reservar cita</a>
+                </div>
+
+            </article>
+        </div>
+
+        <div class="hg-catalog-empty" th:if="${#lists.isEmpty(servicios)}">
+            <p>Muy pronto tendremos nuevos servicios disponibles. Vuelve a visitarnos.</p>
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

@@ -36,8 +36,8 @@
         <!-- MENÚ PRINCIPAL ABIERTO -->
         <nav class="nav-menu" id="navMenu">
             <a th:href="@{/}" href="/" class="nav-link">Inicio</a>
-            <a th:href="@{/servicios}" href="/servicios" class="nav-link">Servicios</a>
-            <a th:href="@{/productos}" href="/productos" class="nav-link">Productos</a>
+            <a th:href="@{/catalogo/servicios}" href="/catalogo/servicios" class="nav-link">Servicios</a>
+            <a th:href="@{/catalogo/productos}" href="/catalogo/productos" class="nav-link">Productos</a>
             <a th:href="@{/citas}" href="/citas" class="nav-link">Reservar</a>
             <a th:if="${nombreUsuarioSesion != null}" th:href="@{/citas/historial}" href="/citas/historial" class="nav-link">Mis Citas</a>
             <a th:href="@{/nosotros}" href="/nosotros" class="nav-link">Sobre Nosotros</a>
@@ -85,8 +85,8 @@
     <!-- PANEL MÓVIL -->
     <div class="mobile-nav-panel" id="mobileNavPanel">
         <a th:href="@{/}" href="/" class="nav-link">Inicio</a>
-        <a th:href="@{/servicios}" href="/servicios" class="nav-link">Servicios</a>
-        <a th:href="@{/productos}" href="/productos" class="nav-link">Productos</a>
+        <a th:href="@{/catalogo/servicios}" href="/catalogo/servicios" class="nav-link">Servicios</a>
+        <a th:href="@{/catalogo/productos}" href="/catalogo/productos" class="nav-link">Productos</a>
         <a th:href="@{/citas}" href="/citas/crear" class="nav-link">Citas</a>
         <a th:href="@{/nosotros}" href="/nosotros" class="nav-link">Sobre Nosotros</a>
 
@@ -162,8 +162,8 @@
                 <h4>Navegación</h4>
                 <ul>
                     <li><a th:href="@{/}" href="/">Inicio</a></li>
-                    <li><a th:href="@{/servicios}" href="/servicios">Servicios</a></li>
-                    <li><a th:href="@{/productos}" href="/productos">Productos</a></li>
+                    <li><a th:href="@{/catalogo/servicios}" href="/catalogo/servicios">Servicios</a></li>
+                    <li><a th:href="@{/catalogo/productos}" href="/catalogo/productos">Productos</a></li>
                     <li><a th:href="@{/citas}" href="/citas">Reservar Cita</a></li>
                     <li th:if="${nombreUsuarioSesion != null}"><a th:href="@{/citas/historial}" href="/citas/historial">Mis Citas</a></li>
                     <li><a th:href="@{/nosotros}" href="/nosotros">Sobre Nosotros</a></li>

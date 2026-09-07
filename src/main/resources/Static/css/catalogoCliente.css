@@ -1,0 +1,196 @@
+/* Reutiliza las variables definidas en client.css (cargado antes en layoutClient) */
+
+.hg-catalog-wrapper {
+    max-width: var(--container-max, 1240px);
+    margin: 0 auto;
+    padding: 30px 24px 80px;
+}
+
+.hg-catalog-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 40px;
+}
+
+.hg-badge-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    background: rgba(var(--burgundy-rgb), 0.08);
+    padding: 4px 14px;
+    border-radius: var(--radius-pill);
+    margin-bottom: 10px;
+}
+
+.hg-catalog-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.5vw, 2.6rem);
+    font-weight: 600;
+    color: var(--burgundy);
+    margin: 0 0 10px;
+}
+
+.hg-catalog-desc {
+    color: var(--muted);
+    font-size: 0.98rem;
+    margin: 0;
+}
+
+/* Grid de tarjetas */
+.hg-catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 26px;
+}
+
+.hg-catalog-card {
+    background: var(--white);
+    border: 1px solid rgba(var(--burgundy-rgb), 0.08);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-subtle);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.hg-catalog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-soft);
+}
+
+.hg-catalog-card-img {
+    position: relative;
+    height: 190px;
+    background: var(--creme);
+    overflow: hidden;
+}
+
+.hg-catalog-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hg-catalog-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--dusty-pink);
+}
+.hg-catalog-img-placeholder svg {
+    width: 42px;
+    height: 42px;
+}
+
+.hg-catalog-category {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--burgundy);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    backdrop-filter: blur(4px);
+}
+
+.hg-catalog-card-body {
+    padding: 20px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.hg-catalog-card-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 8px;
+}
+
+.hg-catalog-card-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0 0 16px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hg-catalog-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.hg-catalog-duration,
+.hg-catalog-stock {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+.hg-catalog-stock.is-low { color: #8C2F2F; }
+
+.hg-catalog-price {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--burgundy);
+}
+
+.hg-catalog-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 11px 0;
+    border-radius: var(--radius-pill);
+    background: var(--burgundy);
+    color: var(--white) !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.hg-catalog-cta:hover {
+    background: var(--burgundy-dark);
+    transform: translateY(-1px);
+}
+
+.hg-catalog-cta--static {
+    background: var(--creme);
+    color: var(--burgundy) !important;
+    border: 1px solid rgba(var(--burgundy-rgb), 0.18);
+    cursor: default;
+}
+.hg-catalog-cta--static:hover { transform: none; }
+
+.hg-catalog-empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 60px 20px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 560px) {
+    .hg-catalog-grid { grid-template-columns: 1fr; }
+}

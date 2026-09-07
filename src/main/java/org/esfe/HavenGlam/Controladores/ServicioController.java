@@ -136,6 +136,12 @@ public class ServicioController {
         return "servicios/details";
     }
 
+    // En ServicioController (o un controller nuevo, p. ej. CatalogoClienteController)
+    @GetMapping("/catalogo/servicios")
+    public String inicioServicio(Model model) {
+        model.addAttribute("servicios", servicioService.listar());
+        return "servicios/inicioServicio";
+    }
     @GetMapping("/eliminar/{id}")
     public String mostrarConfirmacionEliminar(@PathVariable Integer id, Model model) {
         Servicio servicio = servicioService.buscarPorId(id)

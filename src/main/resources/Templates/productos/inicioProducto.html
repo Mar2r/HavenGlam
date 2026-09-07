@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutClient}">
+
+<head>
+    <title>Nuestros Productos · Haven Glam</title>
+    <th:block layout:fragment="extraStyles">
+        <link rel="stylesheet" th:href="@{/css/catalogoCliente.css}">
+    </th:block>
+</head>
+
+<body>
+
+<main layout:fragment="content">
+
+    <div class="hg-catalog-wrapper">
+
+        <header class="hg-catalog-head">
+            <span class="hg-badge-eyebrow">Catálogo</span>
+            <h1 class="hg-catalog-title">Nuestros Productos</h1>
+            <p class="hg-catalog-desc">
+                Lleva a casa el cuidado de Haven Glam con nuestra selección de productos de belleza.
+            </p>
+        </header>
+
+        <div class="hg-catalog-grid" th:if="${not #lists.isEmpty(productos)}">
+            <article class="hg-catalog-card" th:each="producto : ${productos}">
+
+                <div class="hg-catalog-card-img">
+                    <img th:if="${producto.imagenUrl != null}"
+                         th:src="${producto.imagenUrl}"
+                         th:alt="${producto.nombreProducto}">
+                    <div class="hg-catalog-img-placeholder" th:unless="${producto.imagenUrl != null}">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/>
+                            <path d="M3.27 8.27L12 13l8.73-4.73"/>
+                            <path d="M12 21.5V13"/>
+                        </svg>
+                    </div>
+                    <span class="hg-catalog-category"
+                          th:if="${producto.categoria != null}"
+                          th:text="${producto.categoria.nombreCategoria}">Categoría</span>
+                </div>
+
+                <div class="hg-catalog-card-body">
+                    <h3 class="hg-catalog-card-title" th:text="${producto.nombreProducto}">Producto</h3>
+
+                    <p class="hg-catalog-card-desc"
+                       th:text="${producto.descripcion != null and !producto.descripcion.isBlank()
+                                    ? producto.descripcion
+                                    : 'Producto disponible en nuestro salón.'}">
+                        Descripción del producto.
+                    </p>
+
+                    <div class="hg-catalog-card-meta">
+                        <span class="hg-catalog-stock"
+                              th:classappend="${producto.stock != null and producto.stock <= 5} ? 'is-low' : ''">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/>
+                            </svg>
+                            <span th:text="${producto.stock != null and producto.stock > 0 ? 'Disponible' : 'Agotado'}">Disponible</span>
+                        </span>
+                        <span class="hg-catalog-price" th:text="${'$' + producto.precio}">$0.00</span>
+                    </div>
+
+                    <span class="hg-catalog-cta hg-catalog-cta--static">Disponible en salón</span>
+                </div>
+
+            </article>
+        </div>
+
+        <div class="hg-catalog-empty" th:if="${#lists.isEmpty(productos)}">
+            <p>Muy pronto tendremos nuevos productos disponibles. Vuelve a visitarnos.</p>
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

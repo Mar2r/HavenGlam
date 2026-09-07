@@ -102,7 +102,12 @@ public class SecurityConfig {
                                 "/clientes/crear",
                                 "/clientes/registrar",
                                 "/recuperarClave",
-                                "/recuperarClave/**"
+                                "/recuperarClave/**",
+                                "/login",
+                                "/error",
+                                "/catalogo/servicios",
+                                "/catalogo/productos"
+
                         ).permitAll()
                         .requestMatchers(
                                 "/admin/**",

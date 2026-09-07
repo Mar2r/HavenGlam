@@ -25,11 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -71,6 +67,117 @@ public class CitaController {
     @GetMapping("/reservar")
     public String reservarVista(Model model) {
         return "citas/index";
+    }
+
+    // Vista de Historial / Mis Citas del Cliente autenticado
+    @GetMapping({"/historial", "/mis-citas"})
+    public String historialCitas(Model model, Authentication authentication) {
+        Optional<Usuario> usuarioOpt = usuarioAutenticado(authentication);
+        if (usuarioOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        Optional<Cliente> clienteOpt = clienteService.buscarPorPersona(usuario.getPersona().getIdPersona());
+        if (clienteOpt.isEmpty()) {
+            model.addAttribute("citas", List.of());
+            model.addAttribute("totalCitas", 0);
+            return "citas/historial";
+        }
+
+        Cliente cliente = clienteOpt.get();
+        List<CitaServicio> todosCitaServicios = citaServicioService.listar();
+
+        List<Cita> citasList = citaService.listar().stream()
+                .filter(c -> c.getCliente() != null && cliente.getIdCliente().equals(c.getCliente().getIdCliente()))
+                .sorted(Comparator.comparing(Cita::getFecha, Comparator.nullsLast(Comparator.reverseOrder()))
+                        .thenComparing(Cita::getHora, Comparator.nullsLast(Comparator.reverseOrder())))
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> misCitas = new ArrayList<>();
+        for (Cita c : citasList) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("id", c.getIdCita());
+            map.put("codigo", "HG-" + (c.getFecha() != null ? c.getFecha().getYear() : "2026") + "-" + String.format("%04d", c.getIdCita()));
+            map.put("fecha", c.getFecha());
+            map.put("hora", c.getHora());
+            map.put("horaFin", c.getHoraFin());
+
+            String profesional = (c.getEmpleado() != null && c.getEmpleado().getPersona() != null)
+                    ? c.getEmpleado().getPersona().getNombre() + " " + c.getEmpleado().getPersona().getApellido()
+                    : "Especialista Haven Glam";
+            map.put("profesional", profesional);
+
+            String estadoNombre = c.getEstado() != null ? c.getEstado().getNombreEstado() : "Pendiente";
+            map.put("estado", estadoNombre);
+            map.put("tagClass", "status-" + estadoNombre.toLowerCase());
+
+            boolean cancelable = "Pendiente".equalsIgnoreCase(estadoNombre) || "Confirmada".equalsIgnoreCase(estadoNombre);
+            map.put("cancelable", cancelable);
+
+            List<CitaServicio> detalle = todosCitaServicios.stream()
+                    .filter(cs -> cs.getCita() != null && c.getIdCita().equals(cs.getCita().getIdCita()))
+                    .collect(Collectors.toList());
+
+            BigDecimal total = detalle.stream()
+                    .map(cs -> cs.getPrecioAlMomento() != null ? cs.getPrecioAlMomento() : BigDecimal.ZERO)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            map.put("total", total);
+            map.put("servicios", detalle);
+            map.put("observaciones", c.getObservaciones());
+
+            misCitas.add(map);
+        }
+
+        model.addAttribute("citas", misCitas);
+        model.addAttribute("totalCitas", misCitas.size());
+        return "citas/historial";
+    }
+
+    // Cancelar cita por parte del cliente o administrador
+    @PostMapping("/cancelar/{id}")
+    public String cancelarCitaCliente(@PathVariable("id") Integer idCita,
+                                      Authentication authentication,
+                                      org.springframework.web.servlet.mvc.support.RedirectAttributes flash) {
+        Optional<Usuario> usuarioOpt = usuarioAutenticado(authentication);
+        if (usuarioOpt.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        Optional<Cita> citaOpt = citaService.buscarPorId(idCita);
+        if (citaOpt.isEmpty()) {
+            flash.addFlashAttribute("error", "Cita no encontrada.");
+            return "redirect:/citas/historial";
+        }
+
+        Cita cita = citaOpt.get();
+        Usuario usuario = usuarioOpt.get();
+        Optional<Cliente> clienteOpt = clienteService.buscarPorPersona(usuario.getPersona().getIdPersona());
+
+        boolean esPropia = clienteOpt.isPresent() && cita.getCliente() != null
+                && clienteOpt.get().getIdCliente().equals(cita.getCliente().getIdCliente());
+        boolean esAdmin = authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().contains("ADMIN"));
+
+        if (!esPropia && !esAdmin) {
+            flash.addFlashAttribute("error", "No tienes permiso para cancelar esta cita.");
+            return "redirect:/citas/historial";
+        }
+
+        Estado estadoCancelada = estadoService.listar().stream()
+                .filter(e -> "Cancelada".equalsIgnoreCase(e.getNombreEstado()) || "Cancelado".equalsIgnoreCase(e.getNombreEstado()))
+                .findFirst()
+                .orElse(null);
+
+        if (estadoCancelada != null) {
+            cita.setEstado(estadoCancelada);
+            citaService.guardar(cita);
+            flash.addFlashAttribute("exito", "La cita ha sido cancelada correctamente y el horario ha quedado liberado.");
+        } else {
+            flash.addFlashAttribute("error", "No se encontró el estado de cancelación en la base de datos.");
+        }
+
+        return "redirect:/citas/historial";
     }
 
     // Endpoint API: servicios activos, consumido por citas.js (Paso 1)

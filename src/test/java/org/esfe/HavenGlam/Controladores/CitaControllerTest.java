@@ -1,10 +1,12 @@
 package org.esfe.HavenGlam.Controladores;
 
-import org.esfe.HavenGlam.Modelos.Cita;
-import org.esfe.HavenGlam.Modelos.Cliente;
-import org.esfe.HavenGlam.Modelos.Empleado;
-import org.esfe.HavenGlam.Modelos.Estado;
 import org.esfe.HavenGlam.Servicios.Interfaces.ICitaService;
+import org.esfe.HavenGlam.Servicios.Interfaces.ICitaServicioService;
+import org.esfe.HavenGlam.Servicios.Interfaces.IClienteService;
+import org.esfe.HavenGlam.Servicios.Interfaces.IEmpleadoService;
+import org.esfe.HavenGlam.Servicios.Interfaces.IEstadoService;
+import org.esfe.HavenGlam.Servicios.Interfaces.IServicioService;
+import org.esfe.HavenGlam.Servicios.Interfaces.IUsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,14 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,88 +33,83 @@ public class CitaControllerTest {
     @Mock
     private ICitaService citaService;
 
+    @Mock
+    private ICitaServicioService citaServicioService;
+
+    @Mock
+    private IServicioService servicioService;
+
+    @Mock
+    private IEmpleadoService empleadoService;
+
+    @Mock
+    private IClienteService clienteService;
+
+    @Mock
+    private IUsuarioService usuarioService;
+
+    @Mock
+    private IEstadoService estadoService;
+
     @InjectMocks
     private CitaController citaController;
-
-    private Cita cita;
-    private Estado estado;
-    private Cliente cliente;
-    private Empleado empleado;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(citaController).build();
-        estado = new Estado(1, "Activo", "General");
-        cliente = new Cliente(1, null, estado);
-        empleado = new Empleado(1, null, estado);
-        cita = new Cita(1, cliente, empleado, LocalDate.of(2026, 8, 25),
-                LocalTime.of(10, 0), LocalTime.of(10, 30), estado,
-                "Cliente frecuente", LocalDateTime.now());
     }
 
     @Test
-    @DisplayName("GET /citas - Debe retornar la vista list con citas")
-    void listar_RetornaVistaList() throws Exception {
-        when(citaService.listar()).thenReturn(Arrays.asList(cita));
-
+    @DisplayName("GET /citas - Debe retornar la vista index del flujo de reservas")
+    void index_RetornaVistaIndex() throws Exception {
         mockMvc.perform(get("/citas"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("citas/list"))
-                .andExpect(model().attributeExists("citas"));
-
-        verify(citaService, times(1)).listar();
+                .andExpect(view().name("citas/index"));
     }
 
     @Test
-    @DisplayName("GET /citas/crear - Debe retornar la vista form con una nueva Cita")
-    void mostrarFormularioCrear_RetornaVistaForm() throws Exception {
+    @DisplayName("GET /citas/crear - Debe retornar la vista index del flujo de reservas")
+    void crear_RetornaVistaIndex() throws Exception {
         mockMvc.perform(get("/citas/crear"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("citas/form"))
-                .andExpect(model().attributeExists("cita"));
+                .andExpect(view().name("citas/index"));
     }
 
     @Test
-    @DisplayName("GET /citas/editar/{id} - Debe retornar la vista form con la Cita encontrada")
-    void mostrarFormularioEditar_CuandoExiste_RetornaVistaForm() throws Exception {
-        when(citaService.buscarPorId(1)).thenReturn(Optional.of(cita));
-
-        mockMvc.perform(get("/citas/editar/1"))
+    @DisplayName("GET /citas/reservar - Debe retornar la vista index del flujo de reservas")
+    void reservar_RetornaVistaIndex() throws Exception {
+        mockMvc.perform(get("/citas/reservar"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("citas/form"))
-                .andExpect(model().attributeExists("cita"));
-
-        verify(citaService, times(1)).buscarPorId(1);
+                .andExpect(view().name("citas/index"));
     }
 
     @Test
-    @DisplayName("POST /citas/guardar - Con datos válidos debe guardar y redireccionar")
-    void guardar_ConDatosValidos_Redirecciona() throws Exception {
-        when(citaService.guardar(any(Cita.class))).thenReturn(cita);
+    @DisplayName("GET /citas/api/servicios - Debe retornar 200 con la lista de servicios")
+    void apiServicios_RetornaLista() throws Exception {
+        when(servicioService.listar()).thenReturn(List.of());
 
-        mockMvc.perform(post("/citas/guardar")
-                        .param("cliente.idCliente", "1")
-                        .param("empleado.idEmpleado", "1")
-                        .param("fecha", "2026-08-25")
-                        .param("hora", "10:00")
-                        .param("horaFin", "10:30")
-                        .param("estado.idEstado", "1")
-                        .param("observaciones", "Cliente frecuente"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/citas"));
-
-        verify(citaService, times(1)).guardar(any(Cita.class));
+        mockMvc.perform(get("/citas/api/servicios"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
-    @DisplayName("GET /citas/eliminar/{id} - Debe eliminar y redireccionar")
-    void eliminar_Redirecciona() throws Exception {
-        doNothing().when(citaService).eliminar(1);
+    @DisplayName("GET /citas/api/empleados - Debe retornar 200 con la lista de empleados")
+    void apiEmpleados_RetornaLista() throws Exception {
+        when(empleadoService.listar()).thenReturn(List.of());
 
-        mockMvc.perform(get("/citas/eliminar/1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/citas"));
+        mockMvc.perform(get("/citas/api/empleados"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
+    }
 
-        verify(citaService, times(1)).eliminar(1);
+    @Test
+    @DisplayName("GET /citas/api/disponibilidad - Debe retornar 200 con los turnos ocupados")
+    void apiDisponibilidad_RetornaTurnosOcupados() throws Exception {
+        when(citaService.listarActivasPorFecha(any(LocalDate.class))).thenReturn(List.of());
+
+        mockMvc.perform(get("/citas/api/disponibilidad").param("fecha", "2026-09-06"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
     }
 }

@@ -1,81 +1,842 @@
-/* ==================== MODAL DE CONFIRMACIÓN AL CANCELAR ==================== */
-/* Oculto por defecto; solo se activa cuando el script lo requiera */
-.hg-modal-backdrop[hidden],
-.hg-modal-backdrop:not(.active) {
+/* ==========================================================================
+   HAVEN GLAM — AGENDA DEL EMPLEADO (agendaEmpleado.css)
+   Paleta de Colores & Estilos Haven Glam
+   ========================================================================== */
+
+:root {
+    --hg-cream: #fbf8f5;
+    --hg-cream-soft: #f7f1ea;
+    --hg-beige: #eee4da;
+    --hg-beige-dark: #dfd2c4;
+    --hg-sand: #d8c4ac;
+    --hg-dusty: #c8a49f;
+    --hg-burgundy: #74070e;
+    --hg-burgundy-dark: #560509;
+    --hg-burgundy-deep: #340910;
+    --hg-burgundy-light: rgba(116, 7, 14, 0.08);
+    --hg-burgundy-glow: rgba(116, 7, 14, 0.2);
+
+    --hg-ink: #2b201f;
+    --hg-ink-soft: #6b5d59;
+    --hg-ink-muted: #8a7a6d;
+    --hg-white: #ffffff;
+
+    --hg-line: rgba(116, 7, 14, 0.10);
+    --hg-line-subtle: rgba(43, 32, 31, 0.06);
+    --hg-shadow-sm: 0 4px 12px rgba(43, 32, 31, 0.04);
+    --hg-shadow-md: 0 10px 28px rgba(43, 32, 31, 0.07);
+    --hg-shadow-lg: 0 20px 45px rgba(43, 32, 31, 0.12);
+
+    --hg-radius-xl: 24px;
+    --hg-radius-lg: 18px;
+    --hg-radius-md: 12px;
+    --hg-radius-sm: 8px;
+    --hg-radius-pill: 999px;
+
+    --hg-font-sans: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --hg-font-serif: 'Playfair Display', Georgia, serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.hg-agenda-app {
+    font-family: var(--hg-font-sans);
+    background-color: var(--hg-cream);
+    color: var(--hg-ink);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   HEADER / NAVBAR
+   ========================================================================== */
+.hg-agenda-navbar {
+    background: var(--hg-burgundy-deep);
+    background: linear-gradient(135deg, var(--hg-burgundy-deep) 0%, var(--hg-burgundy) 100%);
+    color: var(--hg-white);
+    padding: 16px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hg-agenda-navbar-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.hg-agenda-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    user-select: none;
+}
+
+.hg-agenda-brand-logo {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    display: block;
+}
+
+.hg-agenda-brand-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.hg-agenda-brand-tagline {
+    font-size: 0.82rem;
+    color: #f7ded3;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+}
+
+.hg-agenda-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hg-agenda-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 6px 16px 6px 8px;
+    border-radius: var(--hg-radius-pill);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.hg-agenda-user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--hg-burgundy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    font-family: var(--hg-font-serif);
+}
+
+.hg-agenda-btn-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: var(--hg-radius-pill);
+    font-size: 0.84rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.hg-agenda-btn-logout svg {
+    width: 16px;
+    height: 16px;
+}
+
+.hg-agenda-btn-logout:hover {
+    background: #ffffff;
+    color: var(--hg-burgundy);
+    border-color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   MAIN CONTENT WRAPPER
+   ========================================================================== */
+.hg-agenda-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ==========================================================================
+   PANEL BASE STYLES
+   ========================================================================== */
+.panel {
+    background: var(--hg-white);
+    border: 1px solid var(--hg-line);
+    border-radius: var(--hg-radius-xl);
+    padding: 30px;
+    box-shadow: var(--hg-shadow-md);
+}
+
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--hg-line);
+    padding-bottom: 18px;
+}
+
+.panel-head h2 {
+    font-family: var(--hg-font-serif);
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--hg-ink);
+    margin-bottom: 4px;
+}
+
+.hg-panel-subtitle {
+    font-size: 0.88rem;
+    color: var(--hg-ink-soft);
+}
+
+/* ==========================================================================
+   CALENDAR NAVIGATION
+   ========================================================================== */
+.hg-month-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--hg-cream-soft);
+    padding: 6px 10px;
+    border-radius: var(--hg-radius-pill);
+    border: 1px solid var(--hg-line);
+}
+
+.hg-btn-nav {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--hg-line);
+    background: var(--hg-white);
+    color: var(--hg-ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.hg-btn-nav:hover {
+    background: var(--hg-burgundy);
+    color: #ffffff;
+    border-color: var(--hg-burgundy);
+    transform: scale(1.05);
+}
+
+.hg-current-month-display {
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--hg-font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--hg-burgundy-deep);
+    min-width: 170px;
+    justify-content: center;
+}
+
+.hg-year-num {
+    color: var(--hg-ink-soft);
+    font-weight: 500;
+}
+
+.hg-btn-today {
+    padding: 6px 14px;
+    border-radius: var(--hg-radius-pill);
+    border: 1px solid var(--hg-burgundy);
+    background: var(--hg-burgundy);
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.hg-btn-today:hover {
+    background: var(--hg-burgundy-dark);
+}
+
+/* ==========================================================================
+   CALENDAR LAYOUT & GRID
+   ========================================================================== */
+.hg-calendar-layout-container {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.hg-calendar-main-view {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.hg-weekdays-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.hg-weekday-label {
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--hg-ink-soft);
+    padding: 8px 0;
+}
+
+.hg-weekday-label.hg-sunday {
+    color: var(--hg-burgundy);
+}
+
+.hg-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+/* Celda de Día */
+.hg-day-cell {
+    background: var(--hg-cream-soft);
+    border: 1px solid var(--hg-line);
+    border-radius: var(--hg-radius-md);
+    min-height: 105px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.hg-day-cell:hover {
+    background: #ffffff;
+    border-color: var(--hg-sand);
+    box-shadow: var(--hg-shadow-sm);
+}
+
+.hg-day-cell.hg-other-month {
+    background: #fbf9f7;
+    opacity: 0.45;
+    border-color: transparent;
+}
+
+.hg-day-cell.hg-is-today {
+    background: #ffffff;
+    border: 2px solid var(--hg-burgundy);
+    box-shadow: 0 0 0 3px var(--hg-burgundy-glow);
+}
+
+.hg-day-cell.hg-is-today .hg-day-number {
+    background: var(--hg-burgundy);
+    color: #ffffff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hg-day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hg-day-number {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--hg-ink);
+}
+
+.hg-badge-day-count {
+    background: var(--hg-beige);
+    color: var(--hg-burgundy);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: var(--hg-radius-pill);
+}
+
+.hg-day-appointments {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+    max-height: 90px;
+}
+
+/* ==========================================================================
+   CHIPS Y PILLS DE ESTADOS DE CITAS (CON SOPORTE COMPLETO DE BD)
+   ========================================================================== */
+.hg-appointment-chip {
+    border: none;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+    transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.hg-appointment-chip:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.96);
+}
+
+.hg-chip-time {
+    font-weight: 700;
+    margin-right: 3px;
+    opacity: 0.85;
+}
+
+/* Colores de Estados */
+.status-confirmada,
+.status-confirmado {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    border-left: 3px solid #16a34a !important;
+}
+
+.status-completada,
+.status-completado {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+    border-left: 3px solid #2563eb !important;
+}
+
+.status-cancelada,
+.status-cancelado {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+    border-left: 3px solid #dc2626 !important;
+    text-decoration: line-through;
+    opacity: 0.75;
+}
+
+.status-pendiente,
+.status-bloqueado {
+    background: #fef3c7 !important;
+    color: #b45309 !important;
+    border-left: 3px solid #d97706 !important;
+}
+
+/* ==========================================================================
+   APPOINTMENT SIDEBAR (PANEL LATERAL)
+   ========================================================================== */
+.hg-appointment-sidebar[hidden] {
     display: none !important;
 }
 
-.hg-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(43, 32, 31, 0.55);
-    backdrop-filter: blur(3px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 16px;
-    animation: fadeIn 0.15s ease-out;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.hg-modal-card {
+.hg-appointment-sidebar {
+    width: 360px;
     background: #ffffff;
-    border-radius: 18px;
-    padding: 26px;
-    max-width: 440px;
-    width: 100%;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    text-align: center;
+    border: 1px solid var(--hg-line);
+    border-radius: var(--hg-radius-lg);
+    box-shadow: var(--hg-shadow-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: sidebarSlide 0.2s ease-out;
+    position: sticky;
+    top: 90px;
 }
 
-.hg-modal-icon-warning {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
+@keyframes sidebarSlide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.hg-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--hg-line);
+    padding-bottom: 14px;
+}
+
+.status-pill {
+    padding: 5px 14px;
+    border-radius: var(--hg-radius-pill);
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid transparent;
+}
+
+.status-pill.status-confirmada,
+.status-pill.status-confirmado {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.status-pill.status-completada,
+.status-pill.status-completado {
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #bfdbfe;
+}
+
+.status-pill.status-cancelada,
+.status-pill.status-cancelado {
     background: #fee2e2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+.status-pill.status-pendiente,
+.status-pill.status-bloqueado {
+    background: #fef3c7;
+    color: #b45309;
+    border-color: #fde68a;
+}
+
+.hg-btn-close-sidebar {
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--hg-ink-soft);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.15s ease;
+}
+
+.hg-btn-close-sidebar:hover {
+    color: var(--hg-burgundy);
+}
+
+.hg-sidebar-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.hg-client-card {
+    background: var(--hg-cream-soft);
+    border: 1px solid var(--hg-line);
+    border-radius: var(--hg-radius-md);
+    padding: 16px;
+}
+
+.client-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.client-dot {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--hg-burgundy);
+    color: #ffffff;
+    font-family: var(--hg-font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 16px;
+    flex-shrink: 0;
 }
 
-.hg-modal-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #2b201f;
-    margin: 0 0 8px;
+.hg-client-name {
+    font-family: var(--hg-font-serif);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--hg-ink);
+    margin-bottom: 2px;
 }
 
-.hg-modal-text {
-    font-size: 0.85rem;
-    color: #6b5d59;
-    line-height: 1.5;
-    margin: 0 0 22px;
+.hg-client-meta {
+    font-size: 0.8rem;
+    color: var(--hg-ink-soft);
+    line-height: 1.3;
 }
 
-.hg-modal-actions {
-    display: flex;
+.hg-timing-box {
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 10px;
-    justify-content: center;
+    background: #faf8f5;
+    border: 1px solid var(--hg-line);
+    border-radius: var(--hg-radius-md);
+    padding: 14px 16px;
 }
 
-.hg-btn {
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-size: 0.85rem;
+.hg-timing-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.84rem;
+}
+
+.hg-timing-item .lbl {
+    color: var(--hg-ink-soft);
+    font-weight: 500;
+}
+
+.hg-timing-item strong,
+.hg-timing-item span:not(.lbl) {
+    color: var(--hg-ink);
+    font-weight: 600;
+}
+
+.hg-services-detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hg-services-detail-section > .lbl,
+.hg-notes-box > .lbl {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--hg-burgundy);
+}
+
+.hg-services-detail-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hg-service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--hg-cream-soft);
+    padding: 10px 14px;
+    border-radius: var(--hg-radius-sm);
+    border: 1px solid var(--hg-line);
+    font-size: 0.86rem;
+    color: var(--hg-ink);
+}
+
+.hg-service-item strong {
+    color: var(--hg-burgundy);
+    font-weight: 700;
+}
+
+.hg-total-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px dashed var(--hg-sand);
+    font-size: 0.95rem;
+}
+
+.hg-total-box strong {
+    font-family: var(--hg-font-serif);
+    font-size: 1.25rem;
+    color: var(--hg-burgundy);
+    font-weight: 700;
+}
+
+.hg-notes-box {
+    background: #fff9f0;
+    border: 1px solid #fde68a;
+    border-radius: var(--hg-radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hg-notes-box p {
+    font-size: 0.83rem;
+    color: #78350f;
+    line-height: 1.4;
+}
+
+.hg-sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.hg-btn-action {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: var(--hg-radius-md);
+    font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
     border: none;
     transition: all 0.15s ease;
 }
 
-.hg-btn-secondary { background: #eee4da; color: #2b201f; }
-.hg-btn-secondary:hover { background: #e2d6c9; }
-.hg-btn-danger { background: #74070e; color: #ffffff; }
-.hg-btn-danger:hover { background: #560509; }
+.hg-btn-confirm {
+    background: #166534;
+    color: #ffffff;
+}
+
+.hg-btn-confirm:hover {
+    background: #14532d;
+    transform: translateY(-1px);
+}
+
+.hg-btn-complete {
+    background: #1e40af;
+    color: #ffffff;
+}
+
+.hg-btn-complete:hover {
+    background: #1e3a8a;
+    transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   AGENDA DE HOY SECTION (TABLA INFERIOR)
+   ========================================================================== */
+.agenda {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.agenda-item {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 20px;
+    background: var(--hg-cream-soft);
+    border: 1px solid var(--hg-line);
+    border-radius: var(--hg-radius-md);
+    transition: all 0.15s ease;
+}
+
+.agenda-item:hover {
+    background: #ffffff;
+    border-color: var(--hg-sand);
+    box-shadow: var(--hg-shadow-sm);
+    transform: translateX(3px);
+}
+
+.agenda-time {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--hg-font-serif);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--hg-ink);
+}
+
+.agenda-time .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--hg-burgundy);
+}
+
+.agenda-client {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--hg-ink);
+    margin-bottom: 2px;
+}
+
+.agenda-service {
+    font-size: 0.82rem;
+    color: var(--hg-ink-soft);
+}
+
+.agenda-tag {
+    padding: 5px 14px;
+    border-radius: var(--hg-radius-pill);
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid transparent;
+}
+
+.empty-note {
+    text-align: center;
+    padding: 36px 20px;
+    color: var(--hg-ink-soft);
+    font-style: italic;
+    background: var(--hg-cream-soft);
+    border-radius: var(--hg-radius-md);
+    border: 1px dashed var(--hg-sand);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 1100px) {
+    .hg-calendar-layout-container {
+        flex-direction: column;
+    }
+    .hg-appointment-sidebar {
+        width: 100%;
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .hg-agenda-navbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .hg-agenda-nav-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .agenda-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .hg-day-cell {
+        min-height: 80px;
+        padding: 4px;
+    }
+    .hg-chip-time {
+        display: none;
+    }
+}

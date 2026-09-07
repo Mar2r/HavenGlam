@@ -116,6 +116,7 @@ public class SecurityConfig {
                                 "/citaservicios/**"
                         ).hasRole("ADMINISTRADOR")
                         .requestMatchers(
+                                "/agendaEmpleado",
                                 "/agendaEmpleado/**"
                         ).hasRole("EMPLEADO")
                         .requestMatchers(

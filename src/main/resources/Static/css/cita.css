@@ -156,5 +156,224 @@
     .hg-booking-grid { grid-template-columns: 1fr; }
     .hg-summary-aside { position: static; order: -1; }
     .hg-pro-grid { grid-template-columns: 1fr; }
+}
 
+/* ==========================================================================
+   HISTORIAL DE CITAS DEL CLIENTE
+   ========================================================================== */
+.hg-alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: var(--hg-radius-md);
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.hg-alert-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.hg-alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+.hg-historial-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #ffffff;
+    border-radius: var(--hg-radius-lg);
+    border: 1px dashed var(--hg-sand);
+    max-width: 600px;
+    margin: 0 auto;
+}
+.hg-empty-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--hg-beige);
+    color: var(--hg-burgundy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+}
+.hg-historial-empty h3 {
+    font-family: var(--hg-font-serif);
+    font-size: 1.4rem;
+    color: var(--hg-ink);
+    margin-bottom: 8px;
+}
+.hg-historial-empty p {
+    color: var(--hg-ink-soft);
+    font-size: 0.9rem;
+    max-width: 440px;
+    margin: 0 auto 20px;
+}
+
+.hg-historial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 24px;
+}
+
+.hg-cita-card {
+    background: #ffffff;
+    border: 1px solid var(--hg-line);
+    border-radius: var(--hg-radius-lg);
+    box-shadow: var(--hg-shadow);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hg-cita-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(116, 7, 14, 0.12);
+}
+
+.hg-cita-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--hg-line);
+    padding-bottom: 14px;
+}
+.hg-cita-code {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--hg-burgundy);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+}
+.hg-cita-date {
+    font-family: var(--hg-font-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--hg-ink);
+    margin: 0 0 6px;
+    text-transform: capitalize;
+}
+.hg-cita-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.84rem;
+    color: var(--hg-ink-soft);
+}
+.hg-cita-time strong {
+    color: var(--hg-ink);
+}
+
+/* Status Pills */
+.status-pill {
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1px solid transparent;
+}
+.status-confirmada, .status-confirmado { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+.status-completada, .status-completado { background: #dbeafe; color: #1e40af; border-color: #bfdbfe; }
+.status-cancelada, .status-cancelado { background: #fee2e2; color: #991b1b; border-color: #fecaca; text-decoration: line-through; }
+.status-pendiente, .status-bloqueado { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+
+.hg-cita-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.hg-cita-card-body .lbl {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--hg-ink-soft);
+}
+.hg-cita-pro-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    background: #faf8f5;
+    padding: 10px 14px;
+    border-radius: var(--hg-radius-sm);
+    border: 1px solid var(--hg-line);
+}
+.hg-cita-pro-info strong {
+    color: var(--hg-burgundy);
+}
+
+.hg-cita-services-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.hg-cita-services-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    background: var(--hg-cream);
+    border-radius: var(--hg-radius-sm);
+}
+
+.hg-cita-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 10px;
+    border-top: 1px dashed var(--hg-sand);
+    font-size: 0.95rem;
+}
+.hg-cita-total-row strong {
+    font-family: var(--hg-font-serif);
+    font-size: 1.3rem;
+    color: var(--hg-burgundy);
+}
+
+.hg-cita-notes {
+    font-size: 0.82rem;
+    background: #fff9f0;
+    border: 1px solid #fde68a;
+    border-radius: var(--hg-radius-sm);
+    padding: 10px 12px;
+}
+.hg-cita-notes p {
+    color: #78350f;
+    margin: 2px 0 0;
+}
+
+.hg-cita-card-footer {
+    padding-top: 12px;
+    border-top: 1px solid var(--hg-line);
+    display: flex;
+    justify-content: flex-end;
+}
+.hg-btn-cancel-cita {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+.hg-btn-cancel-cita:hover {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+}
+.hg-cita-status-note {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--hg-ink-soft);
 }

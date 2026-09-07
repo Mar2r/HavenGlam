@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layoutClient}">
+
+<head>
+    <title>Mis Citas — Haven Glam</title>
+    <link rel="stylesheet" th:href="@{/css/cita.css}">
+    <link rel="stylesheet" th:href="@{/css/cita.css}">
+</head>
+
+<body>
+
+<main layout:fragment="content">
+
+    <div class="hg-citas-wrapper">
+
+        <!-- ENCABEZADO -->
+        <header class="hg-citas-head">
+            <span class="hg-badge-eyebrow">Área de Clientes</span>
+            <h1 class="hg-citas-title">Mis Citas Agendadas</h1>
+            <p class="hg-citas-desc">
+                Consulta el historial de tus tratamientos, fechas programadas y gestiona cancelaciones con liberación inmediata de horarios.
+            </p>
+        </header>
+
+        <!-- MENSAJES DE ÉXITO O ERROR -->
+        <div th:if="${exito}" class="hg-alert hg-alert-success">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span th:text="${exito}">Operación realizada con éxito.</span>
+        </div>
+
+        <div th:if="${error}" class="hg-alert hg-alert-danger">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span th:text="${error}">Ha ocurrido un error.</span>
+        </div>
+
+        <!-- ESTADO VACÍO (SIN CITAS) -->
+        <div th:if="${#lists.isEmpty(citas)}" class="hg-historial-empty">
+            <div class="hg-empty-icon">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </div>
+            <h3>Aún no tienes citas agendadas</h3>
+            <p>Descubre nuestros servicios de peluquería, estética y spa y reserva tu momento de relajación.</p>
+            <a th:href="@{/citas}" href="/citas" class="hg-btn hg-btn--primary" style="margin-top: 16px;">
+                Reservar Nueva Cita
+            </a>
+        </div>
+
+        <!-- LISTADO DE CITAS -->
+        <div th:unless="${#lists.isEmpty(citas)}" class="hg-historial-grid">
+
+            <div class="hg-cita-card" th:each="item : ${citas}">
+
+                <!-- Encabezado de la tarjeta -->
+                <div class="hg-cita-card-head">
+                    <div>
+                        <span class="hg-cita-code" th:text="${item.codigo}">HG-2026-0001</span>
+                        <h3 class="hg-cita-date" th:text="${#temporals.format(item.fecha, 'EEEE, d ''de'' MMMM ''de'' yyyy')}">Sábado, 6 de Septiembre de 2026</h3>
+                        <div class="hg-cita-time">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>Horario: <strong th:text="${#temporals.format(item.hora, 'HH:mm') + ' - ' + (item.horaFin != null ? #temporals.format(item.horaFin, 'HH:mm') : 'Fin estimado')}">09:30 - 10:30</strong></span>
+                        </div>
+                    </div>
+
+                    <span class="status-pill" th:classappend="${item.tagClass}" th:text="${item.estado}">PENDIENTE</span>
+                </div>
+
+                <!-- Cuerpo: Especialista y Servicios -->
+                <div class="hg-cita-card-body">
+                    <div class="hg-cita-pro-info">
+                        <span class="lbl">Especialista Asignado:</span>
+                        <strong th:text="${item.profesional}">Elena Ross</strong>
+                    </div>
+
+                    <div class="hg-cita-services-list">
+                        <span class="lbl">Tratamientos solicitados:</span>
+                        <ul>
+                            <li th:each="cs : ${item.servicios}">
+                                <span th:text="${cs.servicio != null ? cs.servicio.nombreServicio : 'Servicio'}">Corte de Autor</span>
+                                <strong th:text="${'$' + #numbers.formatDecimal(cs.precioAlMomento, 1, 'COMMA', 2, 'POINT')}">$35.00</strong>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="hg-cita-total-row">
+                        <span>Total:</span>
+                        <strong th:text="${'$' + #numbers.formatDecimal(item.total, 1, 'COMMA', 2, 'POINT')}">$35.00</strong>
+                    </div>
+
+                    <div class="hg-cita-notes" th:if="${item.observaciones != null && item.observaciones != '' && item.observaciones != 'Sin observaciones'}">
+                        <span class="lbl">Notas:</span>
+                        <p th:text="${item.observaciones}">Observaciones de la cita.</p>
+                    </div>
+                </div>
+
+                <!-- Pie: Acciones de Cancelación -->
+                <div class="hg-cita-card-footer">
+                    <form th:if="${item.cancelable}" th:action="@{'/citas/cancelar/' + ${item.id}}" method="post"
+                          onsubmit="return confirm('¿Estás seguro de cancelar esta cita? Al cancelarla, el horario de atención se liberará inmediatamente para que otras clientas puedan reservarlo.');">
+                        <button type="submit" class="hg-btn-cancel-cita">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                            </svg>
+                            <span>Cancelar Cita</span>
+                        </button>
+                    </form>
+
+                    <div th:unless="${item.cancelable}" class="hg-cita-status-note">
+                        <span th:if="${#strings.equalsIgnoreCase(item.estado, 'Completada') || #strings.equalsIgnoreCase(item.estado, 'Completado')}">✨ Cita finalizada</span>
+                        <span th:if="${#strings.equalsIgnoreCase(item.estado, 'Cancelada') || #strings.equalsIgnoreCase(item.estado, 'Cancelado')}">❌ Turno cancelado y liberado</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

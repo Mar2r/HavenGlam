@@ -201,9 +201,10 @@ p {
     flex-shrink: 0;
 }
 
-.brand-symbol svg {
-    width: 19px;
-    height: 19px;
+.brand-symbol img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
 }
 
 .brand-text {
@@ -215,6 +216,28 @@ p {
 .brand-title {
     font-size: 1.45rem;
     color: var(--burgundy);
+}
+
+/* Logo del navbar: alto fijo en px (NO usar % aquí, .navbar no tiene
+   una altura fija de la que heredar y el logo termina en 0px) */
+.brand-logo {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.brand-logo:hover {
+    transform: scale(1.03);
+}
+
+@media (min-width: 768px) {
+    .brand-logo {
+        height: 48px;
+        width: auto;
+    }
 }
 
 .brand-tagline {
@@ -469,19 +492,14 @@ p {
 
 .footer-brand .nav-brand {
     color: var(--white);
+    display: inline-block;
 }
 
-.footer-brand .brand-symbol {
-    background: var(--white);
-    color: var(--burgundy);
-}
-
-.footer-brand .brand-title {
-    color: var(--white);
-}
-
-.footer-brand .brand-tagline {
-    color: rgba(255, 255, 255, 0.6);
+.footer-logo {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
 }
 
 .footer-brand p {

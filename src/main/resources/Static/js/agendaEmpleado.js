@@ -1,11 +1,6 @@
 /**
- * HAVEN GLAM — Script de Agenda del Empleado (agenda-empleado.js)
- * Funcionalidad:
- * 1. Desplazamiento mensual exclusivo (Botones Anterior, Siguiente y Hoy).
- * 2. Visualización y renderizado dinámico de días y citas de todo el mes.
- * 3. Despliegue de panel lateral derecho con detalles de la clienta.
- * 4. Actualización de estados: Confirmada, Completada, Cancelada.
- * 5. Modal popup de validación obligatoria antes de cancelar cita.
+ * HAVEN GLAM — Script de Agenda del Empleado (agendaEmpleado.js)
+ * Carga de citas reales desde la base de datos y sincronización interactiva de estados.
  */
 
 (function () {
@@ -13,93 +8,11 @@
 
     let currentDate = new Date();
     let selectedAppointmentId = null;
-    let appointmentPendingCancelId = null;
+    let appointmentsList = [];
 
     const MONTH_NAMES = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
-
-    // Citas iniciales en memoria
-    let appointmentsList = [
-        {
-            id: 'HG-2026-0891',
-            client: 'Beatriz Peña',
-            email: 'bp25001@esfe.agape.edu.sv',
-            phone: '7854-9921',
-            service: 'Corte de Autor & Estilizado',
-            professional: 'Elena Ross',
-            dateStr: formatYMD(new Date()),
-            timeSlot: '09:30',
-            price: 35.00,
-            status: 'CONFIRMADO',
-            notes: 'Tratamiento delicado para cabello con tintura previa.'
-        },
-        {
-            id: 'HG-2026-0892',
-            client: 'Carlos Méndez',
-            email: 'carlos.m@ejemplo.com',
-            phone: '7234-5678',
-            service: 'Masaje Relajante Piedras Calientes',
-            professional: 'Marcus Vane',
-            dateStr: formatYMD(new Date()),
-            timeSlot: '11:00',
-            price: 65.00,
-            status: 'BLOQUEADO',
-            notes: ''
-        },
-        {
-            id: 'HG-2026-0893',
-            client: 'Valeria Gómez',
-            email: 'valeria.g@ejemplo.com',
-            phone: '7345-6789',
-            service: 'Manicura Rusa & Esmaltado',
-            professional: 'Claire Dupont',
-            dateStr: formatYMD(new Date()),
-            timeSlot: '14:30',
-            price: 35.00,
-            status: 'COMPLETADO',
-            notes: ''
-        },
-        {
-            id: 'HG-2026-0894',
-            client: 'Mariana Silva',
-            email: 'mariana.s@ejemplo.com',
-            phone: '7111-2233',
-            service: 'Balayage & Iluminación',
-            professional: 'Elena Ross',
-            dateStr: formatYMD(addDays(new Date(), 2)),
-            timeSlot: '10:00',
-            price: 95.00,
-            status: 'CONFIRMADO',
-            notes: 'Decoloración previa requerida.'
-        },
-        {
-            id: 'HG-2026-0895',
-            client: 'Roberto Castillo',
-            email: 'roberto.c@ejemplo.com',
-            phone: '7444-5566',
-            service: 'Corte Caballero & Barba Deluxe',
-            professional: 'Marcus Vane',
-            dateStr: formatYMD(addDays(new Date(), 5)),
-            timeSlot: '16:00',
-            price: 45.00,
-            status: 'BLOQUEADO',
-            notes: ''
-        },
-        {
-            id: 'HG-2026-0896',
-            client: 'Gabriela Morales',
-            email: 'gaby.m@ejemplo.com',
-            phone: '7888-9900',
-            service: 'Lifting de Pestañas & Cejas',
-            professional: 'Claire Dupont',
-            dateStr: formatYMD(addDays(new Date(), -3)),
-            timeSlot: '15:30',
-            price: 30.00,
-            status: 'COMPLETADO',
-            notes: ''
-        }
     ];
 
     // Elementos DOM
@@ -126,20 +39,13 @@
     const panelNotesBox = document.getElementById('panelNotesBox');
     const panelNotesText = document.getElementById('panelNotesText');
 
-    // Botones de acción
+    // Botones de acción (Empleado solo puede Confirmar o Completar)
     const btnActionConfirm = document.getElementById('btnActionConfirm');
     const btnActionComplete = document.getElementById('btnActionComplete');
-    const btnActionCancel = document.getElementById('btnActionCancel');
-
-    // Modal de Confirmación
-    const cancelConfirmModal = document.getElementById('cancelConfirmModal');
-    const modalCancelTimeSlot = document.getElementById('modalCancelTimeSlot');
-    const btnModalCancelBack = document.getElementById('btnModalCancelBack');
-    const btnModalConfirmCancellation = document.getElementById('btnModalConfirmCancellation');
 
     function init() {
         bindEvents();
-        renderCalendar();
+        fetchAppointments();
     }
 
     function bindEvents() {
@@ -172,36 +78,41 @@
 
         if (btnActionConfirm) {
             btnActionConfirm.addEventListener('click', () => {
-                updateAppointmentStatus(selectedAppointmentId, 'CONFIRMADO');
+                updateAppointmentStatus(selectedAppointmentId, 'Confirmada');
             });
         }
 
         if (btnActionComplete) {
             btnActionComplete.addEventListener('click', () => {
-                updateAppointmentStatus(selectedAppointmentId, 'COMPLETADO');
+                updateAppointmentStatus(selectedAppointmentId, 'Completada');
             });
         }
+    }
 
-        if (btnActionCancel) {
-            btnActionCancel.addEventListener('click', () => {
-                openCancelModal(selectedAppointmentId);
-            });
+    async function fetchAppointments() {
+        try {
+            const response = await fetch('/agendaEmpleado/api/citas');
+            if (!response.ok) {
+                console.warn('No se pudieron obtener las citas desde la base de datos:', response.status);
+                return;
+            }
+            const data = await response.json();
+            if (Array.isArray(data)) {
+                appointmentsList = data;
+                renderCalendar();
+            }
+        } catch (error) {
+            console.error('Error al conectar con la API de citas:', error);
         }
+    }
 
-        if (btnModalCancelBack) {
-            btnModalCancelBack.addEventListener('click', () => {
-                closeCancelModal();
-            });
-        }
-
-        if (btnModalConfirmCancellation) {
-            btnModalConfirmCancellation.addEventListener('click', () => {
-                if (appointmentPendingCancelId) {
-                    updateAppointmentStatus(appointmentPendingCancelId, 'CANCELADO');
-                    closeCancelModal();
-                }
-            });
-        }
+    function getStatusClass(statusStr) {
+        if (!statusStr) return 'status-pendiente';
+        const s = statusStr.trim().toLowerCase();
+        if (s.startsWith('confirm')) return 'status-confirmada';
+        if (s.startsWith('complet')) return 'status-completada';
+        if (s.startsWith('cancel')) return 'status-cancelada';
+        return 'status-pendiente';
     }
 
     function renderCalendar() {
@@ -237,7 +148,7 @@
             const isToday = dateStr === todayStr;
 
             const dayApts = appointmentsList.filter(a => a.dateStr === dateStr);
-            dayApts.sort((a, b) => a.timeSlot.localeCompare(b.timeSlot));
+            dayApts.sort((a, b) => (a.timeSlot || '').localeCompare(b.timeSlot || ''));
 
             const cell = createDayCell(day, false, dateStr, isToday, dayApts);
             calendarDaysGrid.appendChild(cell);
@@ -282,9 +193,12 @@
             appointments.forEach(apt => {
                 const chip = document.createElement('button');
                 chip.type = 'button';
-                chip.className = `hg-appointment-chip status-${apt.status.toLowerCase()}`;
-                chip.title = `${apt.timeSlot} — ${apt.client} (${apt.service})`;
-                chip.innerHTML = `<span class="hg-chip-time">${apt.timeSlot}</span> ${apt.client.split(' ')[0]}`;
+                const sClass = getStatusClass(apt.status);
+                chip.className = `hg-appointment-chip ${sClass}`;
+                chip.title = `${apt.timeSlot || ''} — ${apt.client || 'Cliente'} (${apt.service || 'Servicio'})`;
+
+                const clientFirstName = (apt.client || 'Cliente').split(' ')[0];
+                chip.innerHTML = `<span class="hg-chip-time">${apt.timeSlot || ''}</span> ${clientFirstName}`;
 
                 chip.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -307,33 +221,46 @@
         selectedAppointmentId = appointmentId;
         if (appointmentSidebar) appointmentSidebar.hidden = false;
 
+        const sClass = getStatusClass(apt.status);
+
         if (panelStatusBadge) {
-            panelStatusBadge.textContent = apt.status;
-            panelStatusBadge.className = `status-pill status-${apt.status.toLowerCase()}`;
+            panelStatusBadge.textContent = apt.status ? apt.status.toUpperCase() : 'PENDIENTE';
+            panelStatusBadge.className = `status-pill ${sClass}`;
         }
 
-        if (panelClientAvatar) panelClientAvatar.textContent = apt.client.charAt(0);
-        if (panelClientName) panelClientName.textContent = apt.client;
-        if (panelClientEmail) panelClientEmail.textContent = apt.email;
-        if (panelClientPhone) panelClientPhone.textContent = `Tel: ${apt.phone}`;
+        if (panelClientAvatar) {
+            panelClientAvatar.textContent = (apt.client && apt.client.trim().length > 0) ? apt.client.trim().charAt(0).toUpperCase() : 'C';
+        }
+        if (panelClientName) panelClientName.textContent = apt.client || 'Cliente';
+        if (panelClientEmail) panelClientEmail.textContent = apt.email || 'Sin correo registrado';
+        if (panelClientPhone) panelClientPhone.textContent = `Tel: ${apt.phone || 'N/A'}`;
 
-        if (panelDateStr) panelDateStr.textContent = apt.dateStr;
-        if (panelTimeSlot) panelTimeSlot.textContent = `${apt.timeSlot} hrs`;
-        if (panelProfessionalName) panelProfessionalName.textContent = apt.professional;
+        if (panelDateStr) panelDateStr.textContent = apt.dateStr || '—';
+        if (panelTimeSlot) panelTimeSlot.textContent = apt.timeSlot ? `${apt.timeSlot} hrs` : '—';
+        if (panelProfessionalName) panelProfessionalName.textContent = apt.professional || 'Especialista';
 
         if (panelServicesList) {
-            panelServicesList.innerHTML = `
-                <li class="hg-service-item">
-                    <span>${apt.service}</span>
-                    <strong>$${apt.price.toFixed(2)}</strong>
-                </li>
-            `;
+            if (Array.isArray(apt.services) && apt.services.length > 0) {
+                panelServicesList.innerHTML = apt.services.map(s => `
+                    <li class="hg-service-item">
+                        <span>${s.name}</span>
+                        <strong>$${Number(s.price || 0).toFixed(2)}</strong>
+                    </li>
+                `).join('');
+            } else {
+                panelServicesList.innerHTML = `
+                    <li class="hg-service-item">
+                        <span>${apt.service || 'Servicio General'}</span>
+                        <strong>$${Number(apt.price || 0).toFixed(2)}</strong>
+                    </li>
+                `;
+            }
         }
 
-        if (panelTotalAmount) panelTotalAmount.textContent = `$${apt.price.toFixed(2)}`;
+        if (panelTotalAmount) panelTotalAmount.textContent = `$${Number(apt.price || 0).toFixed(2)}`;
 
         if (panelNotesBox) {
-            if (apt.notes) {
+            if (apt.notes && apt.notes.trim() !== '' && apt.notes.trim() !== 'Sin observaciones') {
                 panelNotesBox.style.display = 'block';
                 if (panelNotesText) panelNotesText.textContent = apt.notes;
             } else {
@@ -342,37 +269,39 @@
         }
     }
 
-    function updateAppointmentStatus(appointmentId, newStatus) {
+    async function updateAppointmentStatus(appointmentId, newStatus) {
         const apt = appointmentsList.find(a => a.id === appointmentId);
         if (!apt) return;
 
-        apt.status = newStatus;
-        loadAppointmentDetails(appointmentId);
-        renderCalendar();
-    }
+        try {
+            const response = await fetch(`/agendaEmpleado/api/citas/${appointmentId}/estado`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ estado: newStatus })
+            });
 
-    function openCancelModal(appointmentId) {
-        const apt = appointmentsList.find(a => a.id === appointmentId);
-        if (!apt) return;
-
-        appointmentPendingCancelId = appointmentId;
-        if (modalCancelTimeSlot) modalCancelTimeSlot.textContent = `${apt.timeSlot} hrs (${apt.dateStr})`;
-        if (cancelConfirmModal) cancelConfirmModal.hidden = false;
-    }
-
-    function closeCancelModal() {
-        appointmentPendingCancelId = null;
-        if (cancelConfirmModal) cancelConfirmModal.hidden = true;
+            if (response.ok) {
+                const data = await response.json();
+                apt.status = data.nuevoEstado || newStatus;
+                loadAppointmentDetails(appointmentId);
+                renderCalendar();
+            } else {
+                apt.status = newStatus;
+                loadAppointmentDetails(appointmentId);
+                renderCalendar();
+            }
+        } catch (err) {
+            console.error('Error al guardar nuevo estado:', err);
+            apt.status = newStatus;
+            loadAppointmentDetails(appointmentId);
+            renderCalendar();
+        }
     }
 
     function formatYMD(d) {
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function addDays(d, days) {
-        const result = new Date(d);
-        result.setDate(result.getDate() + days);
-        return result;
     }
 
     if (document.readyState === 'loading') {

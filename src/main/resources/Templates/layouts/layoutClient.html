@@ -27,26 +27,19 @@
 
         <!-- LOGO -->
         <a th:href="@{/}" href="/" class="nav-brand" id="navBrand">
-                <span class="brand-symbol">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                         stroke-linejoin="round">
-                        <path
-                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z">
-                        </path>
-                    </svg>
-                </span>
-            <div class="brand-text">
-                <span class="brand-title">Haven Glam</span>
-                <span class="brand-tagline">Sanctuary & Beauty</span>
-            </div>
+            <img class="brand-logo"
+                 th:src="@{/img/LogHavenGlam.svg}"
+                 alt="Haven Glam">
         </a>
+
 
         <!-- MENÚ PRINCIPAL ABIERTO -->
         <nav class="nav-menu" id="navMenu">
             <a th:href="@{/}" href="/" class="nav-link">Inicio</a>
             <a th:href="@{/servicios}" href="/servicios" class="nav-link">Servicios</a>
             <a th:href="@{/productos}" href="/productos" class="nav-link">Productos</a>
-            <a th:href="@{/citas}" href="/citas" class="nav-link">Citas</a>
+            <a th:href="@{/citas}" href="/citas" class="nav-link">Reservar</a>
+            <a th:if="${nombreUsuarioSesion != null}" th:href="@{/citas/historial}" href="/citas/historial" class="nav-link">Mis Citas</a>
             <a th:href="@{/nosotros}" href="/nosotros" class="nav-link">Sobre Nosotros</a>
         </nav>
 
@@ -139,20 +132,14 @@
 
             <div class="footer-brand">
                 <a th:href="@{/}" href="/" class="nav-brand">
-                        <span class="brand-symbol">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path
-                                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z">
-                                </path>
-                            </svg>
-                        </span>
-                    <div class="brand-text">
-                        <span class="brand-title">Haven Glam</span>
-                        <span class="brand-tagline">Sanctuary & Beauty</span>
-                    </div>
+                    <img class="brand-logo footer-logo"
+                         th:src="@{/img/LogHavenGlam_blanco.svg}"
+                         alt="Haven Glam">
                 </a>
-                <p>Tu santuario personal de belleza y bienestar. Cuidamos cada detalle para ofrecerte momentos de
-                    serenidad y resultados radiantes.</p>
+                <p>
+                    Tu santuario personal de belleza y bienestar. Cuidamos cada detalle para ofrecerte
+                    momentos de serenidad y resultados radiantes.
+                </p>
                 <div class="footer-social-links">
                     <a href="#" aria-label="Instagram">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -177,7 +164,8 @@
                     <li><a th:href="@{/}" href="/">Inicio</a></li>
                     <li><a th:href="@{/servicios}" href="/servicios">Servicios</a></li>
                     <li><a th:href="@{/productos}" href="/productos">Productos</a></li>
-                    <li><a th:href="@{/citas}" href="/citas">Citas</a></li>
+                    <li><a th:href="@{/citas}" href="/citas">Reservar Cita</a></li>
+                    <li th:if="${nombreUsuarioSesion != null}"><a th:href="@{/citas/historial}" href="/citas/historial">Mis Citas</a></li>
                     <li><a th:href="@{/nosotros}" href="/nosotros">Sobre Nosotros</a></li>
                 </ul>
             </div>
